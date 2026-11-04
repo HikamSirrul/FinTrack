@@ -128,7 +128,6 @@ function getTransactionLabel(type: TransactionType) {
 }
 
 export default function TransactionsPage({
-  onBack,
   onDataChanged,
 }: TransactionsPageProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([])

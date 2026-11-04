@@ -200,13 +200,13 @@ export default function HomePage({ onRegister }: HomePageProps) {
           </div>
         </section>
       </main>
-
-      <footer className="border-t border-slate-100 px-5 py-7 sm:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
-          <p className="font-bold text-slate-900">Fin<span className="text-emerald-600">Track</span></p>
-          <p className="text-sm text-slate-500">© {new Date().getFullYear()} FinTrack. Kelola keuangan dengan lebih terarah.</p>
-        </div>
-      </footer>
+        <footer className="border-t border-slate-100 px-5 py-7 sm:px-8">
+            <div className="mx-auto flex max-w-7xl items-center justify-center">
+                <p className="text-center text-sm text-slate-500">
+                © {new Date().getFullYear()} FinTrack. Kelola keuangan dengan lebih terarah.
+                </p>
+            </div>
+        </footer>
     </div>
   )
 }
