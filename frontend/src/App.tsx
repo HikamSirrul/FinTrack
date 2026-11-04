@@ -6,6 +6,10 @@ import type { DashboardSummary } from './types/dashboard'
 import AccountsPage from './pages/AccountsPage'
 import CategoriesPage from './pages/CategoriesPage'
 import TransactionsPage from './pages/TransactionsPage'
+import RegisterPage from './pages/Register'
+import LoginPage from './pages/Login'
+import HomePage from './pages/Home'
+import PublicNavbar from './components/PublicNavbar'
 import api from './lib/api'
 
 type DashboardAccount = {
@@ -218,6 +222,13 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // Status autentikasi pengguna.
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [authPage, setAuthPage] = useState<
+  'home' | 'login' | 'register'
+>('home')
+
   const [currentPage, setCurrentPage] = useState<
     'dashboard' | 'accounts' | 'categories' | 'transactions'
   >('dashboard')
@@ -256,28 +267,154 @@ function App() {
   }, [])
 
   /**
-   * Memuat data ketika App pertama kali dibuka.
+   * Memeriksa token saat aplikasi pertama kali dibuka.
+   * Dashboard hanya dimuat jika token masih valid.
    */
   useEffect(() => {
     let active = true
 
-    async function loadInitialDashboard() {
-      setLoading(true)
+    async function initializeApp() {
+      const token = localStorage.getItem('fintrack_token')
 
-      await refreshDashboard()
+      if (!token) {
+        if (active) {
+          setAuthLoading(false)
+          setLoading(false)
+        }
+        return
+      }
 
-      if (active) {
-        setLoading(false)
+      try {
+        await api.get('/auth/me')
+
+        if (!active) return
+
+        setIsAuthenticated(true)
+        await refreshDashboard()
+      } catch (authError) {
+        console.error('Gagal memeriksa sesi autentikasi:', authError)
+
+        const status = (
+          authError as { response?: { status?: number } }
+        ).response?.status
+
+        // Token hanya dihapus jika server menyatakan token tidak valid.
+        if (status === 401 || status === 403) {
+          localStorage.removeItem('fintrack_token')
+        }
+
+        if (active) {
+          setIsAuthenticated(false)
+          setError('')
+        }
+      } finally {
+        if (active) {
+          setAuthLoading(false)
+          setLoading(false)
+        }
       }
     }
 
-    void loadInitialDashboard()
+    void initializeApp()
 
     return () => {
       active = false
     }
   }, [refreshDashboard])
 
+  /**
+   * Dipanggil setelah login atau registrasi berhasil.
+   */
+  const handleAuthSuccess = async () => {
+    setIsAuthenticated(true)
+    setError('')
+    setLoading(true)
+
+    await refreshDashboard()
+
+    setLoading(false)
+  }
+
+  /**
+   * Mengakhiri sesi pengguna dan menghapus token lokal.
+   */
+  const handleLogout = () => {
+    localStorage.removeItem('fintrack_token')
+    setIsAuthenticated(false)
+    setAuthPage('home')
+    setCurrentPage('dashboard')
+    setSummary(null)
+    setAccounts([])
+    setError('')
+    setLoading(false)
+  }
+
+   if (!isAuthenticated) {
+  return (
+    <>
+      <PublicNavbar
+        activePage={authPage}
+        onHome={() => setAuthPage('home')}
+        onLogin={() => setAuthPage('login')}
+        onRegister={() => setAuthPage('register')}
+      />
+
+      {authPage === 'register' ? (
+        <RegisterPage
+          onSwitchToLogin={() => setAuthPage('login')}
+          onRegisterSuccess={handleAuthSuccess}
+        />
+      ) : authPage === 'login' ? (
+        <LoginPage
+          onSwitchToRegister={() => setAuthPage('register')}
+          onLoginSuccess={handleAuthSuccess}
+        />
+      ) : (
+        <HomePage
+          onLogin={() => setAuthPage('login')}
+          onRegister={() => setAuthPage('register')}
+        />
+      )}
+    </>
+  )
+}
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <p className="text-slate-600">
+          Memeriksa sesi pengguna...
+        </p>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+  if (authPage === 'register') {
+    return (
+      <RegisterPage
+        onSwitchToLogin={() => setAuthPage('login')}
+        onRegisterSuccess={handleAuthSuccess}
+      />
+    )
+  }
+
+  if (authPage === 'login') {
+    return (
+      <LoginPage
+        onSwitchToRegister={() => setAuthPage('register')}
+        onLoginSuccess={handleAuthSuccess}
+      />
+    )
+  }
+
+  return (
+    <HomePage
+      onLogin={() => setAuthPage('login')}
+      onRegister={() => setAuthPage('register')}
+    />
+  )
+}
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -371,9 +508,19 @@ function App() {
             </button>
           </div>
 
-          <div className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600 shadow-sm">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            Ringkasan keuangan
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              Ringkasan keuangan
+            </div>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-white px-4 py-3 text-sm font-semibold text-rose-600 shadow-sm transition hover:bg-rose-50"
+            >
+              Keluar
+            </button>
           </div>
         </header>
 

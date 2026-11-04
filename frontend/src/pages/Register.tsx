@@ -1,0 +1,248 @@
+
+import { useState, type FormEvent } from 'react'
+import axios from 'axios'
+import api from '../lib/api'
+
+interface RegisterProps {
+  onSwitchToLogin: () => void
+  onRegisterSuccess: () => void
+}
+
+interface AuthResponse {
+  message: string
+  token: string
+  user: {
+    id: string
+    name: string
+    email: string
+  }
+}
+
+export default function Register({
+  onSwitchToLogin,
+  onRegisterSuccess,
+}: RegisterProps) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setError('')
+
+    if (password !== confirmPassword) {
+      setError('Konfirmasi password tidak cocok.')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const response = await api.post<AuthResponse>('/auth/register', {
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      })
+
+      const { token } = response.data
+
+      if (!token) {
+        throw new Error(
+          'Registrasi berhasil, tetapi token tidak ditemukan pada respons backend.',
+        )
+      }
+
+      localStorage.setItem('fintrack_token', token)
+      onRegisterSuccess()
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(
+          err.response?.data?.message ||
+            'Registrasi gagal. Silakan periksa data yang dimasukkan.',
+        )
+      } else if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('Terjadi kesalahan. Silakan coba kembali.')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white px-4 py-10">
+      {/* Background decoration */}
+      <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-emerald-100/70 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-teal-50 blur-3xl" />
+
+      <div className="relative z-10 w-full max-w-lg">
+        {/* Logo */}
+          <div className="mb-6 flex items-center justify-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl font-bold text-white shadow-sm">
+              F
+            </div>
+
+            <span className="text-2xl font-bold tracking-tight">
+              <span className="text-emerald-600">Fin</span>
+              <span className="text-slate-900">Track</span>
+            </span>
+          </div>
+        {/* Register Card */}
+        <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5 sm:p-9">
+          <div className="mb-6">
+
+            <h2 className="text-2xl text-center font-bold tracking-tight text-slate-900">
+              Buat akun baru
+            </h2>
+
+            <p className="mt-2 text-sm text-center leading-6 text-slate-500">
+              Lengkapi informasi berikut untuk mulai mengelola keuanganmu.
+            </p>
+          </div>
+
+          {error && (
+            <div
+              role="alert"
+              className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            >
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="mb-2 block text-sm font-semibold text-slate-700"
+              >
+                Nama lengkap
+              </label>
+
+              <input
+                id="name"
+                type="text"
+                autoComplete="name"
+                placeholder="Masukkan nama lengkap"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                required
+                maxLength={100}
+                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="email"
+                className="mb-2 block text-sm font-semibold text-slate-700"
+              >
+                Email
+              </label>
+
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder="nama@email.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="mb-2 block text-sm font-semibold text-slate-700"
+              >
+                Password
+              </label>
+
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  placeholder="Buat password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
+                  minLength={8}
+                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pr-24 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs font-semibold text-emerald-600 transition hover:bg-emerald-50 hover:text-emerald-800"
+                >
+                  {showPassword ? 'Sembunyikan' : 'Lihat'}
+                </button>
+              </div>
+
+              <p className="mt-1.5 text-xs text-slate-400">
+                Gunakan minimal 8 karakter.
+              </p>
+            </div>
+
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="mb-2 block text-sm font-semibold text-slate-700"
+              >
+                Konfirmasi password
+              </label>
+
+              <input
+                id="confirmPassword"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="new-password"
+                placeholder="Ulangi password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                required
+                minLength={8}
+                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-2 flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+            >
+              {loading ? 'Memproses...' : 'Buat Akun'}
+            </button>
+          </form>
+
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-slate-100" />
+            <span className="text-xs text-slate-400">ATAU</span>
+            <div className="h-px flex-1 bg-slate-100" />
+          </div>
+
+          <p className="text-center text-sm text-slate-500">
+            Sudah memiliki akun?{' '}
+            <button
+              type="button"
+              onClick={onSwitchToLogin}
+              className="font-bold text-emerald-600 transition hover:text-emerald-800 hover:underline"
+            >
+              Masuk di sini
+            </button>
+          </p>
+        </div>
+
+        <p className="mt-6 text-center text-xs text-slate-400">
+          © {new Date().getFullYear()} FinTrack. Manage your money smarter.
+        </p>
+      </div>
+    </div>
+  )
+}
