@@ -37,7 +37,6 @@ function getErrorMessage(err: unknown): string | undefined {
 }
 
 export default function CategoriesPage({
-  onBack,
 }: {
   onBack: () => void
 }) {
@@ -172,9 +171,6 @@ export default function CategoriesPage({
       <div className="mx-auto max-w-7xl space-y-8">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-indigo-600">
-              FINTRACK
-            </p>
             <h1 className="mt-1 text-3xl font-bold">
               Manajemen Kategori
             </h1>
@@ -182,14 +178,6 @@ export default function CategoriesPage({
               Kelompokkan pemasukan dan pengeluaran agar keuangan lebih terorganisasi.
             </p>
           </div>
-
-          <button
-            type="button"
-            onClick={onBack}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold hover:bg-slate-100"
-          >
-            ← Kembali ke Dashboard
-          </button>
         </header>
 
         {error && (

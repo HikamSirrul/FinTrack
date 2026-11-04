@@ -23,7 +23,7 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
   )
 }
 
-export default function HomePage({ onLogin, onRegister }: HomePageProps) {
+export default function HomePage({ onRegister }: HomePageProps) {
   return (
     <div className="min-h-screen overflow-hidden bg-white text-slate-800">
      

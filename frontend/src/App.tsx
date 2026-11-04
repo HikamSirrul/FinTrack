@@ -1,15 +1,19 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+
 import { getDashboardSummary } from './services/dashboard'
 import type { DashboardSummary } from './types/dashboard'
+
 import AccountsPage from './pages/AccountsPage'
 import CategoriesPage from './pages/CategoriesPage'
 import TransactionsPage from './pages/TransactionsPage'
 import RegisterPage from './pages/Register'
 import LoginPage from './pages/Login'
 import HomePage from './pages/Home'
+
 import PublicNavbar from './components/PublicNavbar'
+import DashboardLayout from './components/DashboardLayout'
 import api from './lib/api'
 
 type DashboardAccount = {
@@ -19,6 +23,14 @@ type DashboardAccount = {
   initialBalance: number | string
   currentBalance: number | string
 }
+
+type Page =
+  | 'dashboard'
+  | 'accounts'
+  | 'categories'
+  | 'transactions'
+
+type AuthPage = 'home' | 'login' | 'register'
 
 type CardProps = {
   id?: string
@@ -89,7 +101,7 @@ function StatCard({
   return (
     <Card>
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm font-medium text-slate-500">
             {title}
           </p>
@@ -205,7 +217,7 @@ function ProgressBar({
         className="h-full rounded-full transition-all duration-300"
         style={{
           width: `${safePercentage}%`,
-          backgroundColor: color || '#4f46e5',
+          backgroundColor: color || '#059669',
         }}
       />
     </div>
@@ -222,20 +234,19 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  // Status autentikasi pengguna.
+  // Status autentikasi
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [authLoading, setAuthLoading] = useState(true)
-  const [authPage, setAuthPage] = useState<
-  'home' | 'login' | 'register'
->('home')
 
-  const [currentPage, setCurrentPage] = useState<
-    'dashboard' | 'accounts' | 'categories' | 'transactions'
-  >('dashboard')
+  // Halaman publik
+  const [authPage, setAuthPage] = useState<AuthPage>('home')
+
+  // Halaman dashboard
+  const [currentPage, setCurrentPage] = useState<Page>('dashboard')
 
   /**
    * Memuat ulang ringkasan Dashboard dan saldo setiap akun.
-   * Fungsi ini juga dipanggil setelah transaksi atau transfer berubah.
+   * Dipanggil setelah transaksi atau transfer berubah.
    */
   const refreshDashboard = useCallback(async () => {
     try {
@@ -281,6 +292,7 @@ function App() {
           setAuthLoading(false)
           setLoading(false)
         }
+
         return
       }
 
@@ -292,7 +304,10 @@ function App() {
         setIsAuthenticated(true)
         await refreshDashboard()
       } catch (authError) {
-        console.error('Gagal memeriksa sesi autentikasi:', authError)
+        console.error(
+          'Gagal memeriksa sesi autentikasi:',
+          authError,
+        )
 
         const status = (
           authError as { response?: { status?: number } }
@@ -327,6 +342,8 @@ function App() {
    */
   const handleAuthSuccess = async () => {
     setIsAuthenticated(true)
+    setAuthPage('home')
+    setCurrentPage('dashboard')
     setError('')
     setLoading(true)
 
@@ -340,191 +357,187 @@ function App() {
    */
   const handleLogout = () => {
     localStorage.removeItem('fintrack_token')
+
     setIsAuthenticated(false)
     setAuthPage('home')
     setCurrentPage('dashboard')
+
     setSummary(null)
     setAccounts([])
     setError('')
     setLoading(false)
   }
 
-   if (!isAuthenticated) {
-  return (
-    <>
-      <PublicNavbar
-        activePage={authPage}
-        onHome={() => setAuthPage('home')}
-        onLogin={() => setAuthPage('login')}
-        onRegister={() => setAuthPage('register')}
-      />
-
-      {authPage === 'register' ? (
-        <RegisterPage
-          onSwitchToLogin={() => setAuthPage('login')}
-          onRegisterSuccess={handleAuthSuccess}
-        />
-      ) : authPage === 'login' ? (
-        <LoginPage
-          onSwitchToRegister={() => setAuthPage('register')}
-          onLoginSuccess={handleAuthSuccess}
-        />
-      ) : (
-        <HomePage
-          onLogin={() => setAuthPage('login')}
-          onRegister={() => setAuthPage('register')}
-        />
-      )}
-    </>
-  )
-}
-
+  // Tampilkan loading sebelum menentukan halaman publik atau dashboard.
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <p className="text-slate-600">
-          Memeriksa sesi pengguna...
-        </p>
+        <div className="text-center">
+          <div className="mx-auto h-9 w-9 animate-spin rounded-full border-4 border-emerald-100 border-t-emerald-600" />
+
+          <p className="mt-4 text-sm font-medium text-slate-600">
+            Memeriksa sesi pengguna...
+          </p>
+        </div>
       </div>
     )
   }
 
+  // Halaman publik: Homepage, Login, dan Register.
   if (!isAuthenticated) {
-  if (authPage === 'register') {
     return (
-      <RegisterPage
-        onSwitchToLogin={() => setAuthPage('login')}
-        onRegisterSuccess={handleAuthSuccess}
-      />
+      <>
+        {authPage === 'home' && (
+          <PublicNavbar
+            activePage={authPage}
+            onHome={() => setAuthPage('home')}
+            onLogin={() => setAuthPage('login')}
+            onRegister={() => setAuthPage('register')}
+          />
+        )}
+
+        {authPage === 'register' ? (
+          <RegisterPage
+            onSwitchToLogin={() => setAuthPage('login')}
+            onRegisterSuccess={handleAuthSuccess}
+          />
+        ) : authPage === 'login' ? (
+          <LoginPage
+            onSwitchToRegister={() => setAuthPage('register')}
+            onLoginSuccess={handleAuthSuccess}
+          />
+        ) : (
+          <HomePage
+            onLogin={() => setAuthPage('login')}
+            onRegister={() => setAuthPage('register')}
+          />
+        )}
+      </>
     )
   }
 
-  if (authPage === 'login') {
-    return (
-      <LoginPage
-        onSwitchToRegister={() => setAuthPage('register')}
-        onLoginSuccess={handleAuthSuccess}
-      />
-    )
-  }
-
-  return (
-    <HomePage
-      onLogin={() => setAuthPage('login')}
-      onRegister={() => setAuthPage('register')}
-    />
-  )
-}
+  // Loading setelah login atau saat memuat data dashboard.
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <p className="text-slate-600">
-          Memuat dashboard...
-        </p>
+        <div className="text-center">
+          <div className="mx-auto h-9 w-9 animate-spin rounded-full border-4 border-emerald-100 border-t-emerald-600" />
+
+          <p className="mt-4 text-sm font-medium text-slate-600">
+            Memuat dashboard...
+          </p>
+        </div>
       </div>
     )
   }
 
+  // Tampilan jika data dashboard gagal dimuat.
   if (error || !summary) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
-        <div className="max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h1 className="text-xl font-bold">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-50 text-xl text-rose-600">
+            !
+          </div>
+
+          <h1 className="mt-4 text-xl font-bold text-slate-900">
             Dashboard belum tersedia
           </h1>
 
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm leading-6 text-slate-500">
             {error || 'Data dashboard belum tersedia.'}
           </p>
 
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="mt-4 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white"
+            className="mt-5 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
           >
             Muat Ulang
+          </button>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="ml-2 rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+          >
+            Keluar
           </button>
         </div>
       </div>
     )
   }
 
+  // Halaman Akun Keuangan.
   if (currentPage === 'accounts') {
     return (
-      <AccountsPage
-        onBack={() => setCurrentPage('dashboard')}
-      />
+      <DashboardLayout
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+        onLogout={handleLogout}
+      >
+        <AccountsPage
+          onBack={() => setCurrentPage('dashboard')}
+        />
+      </DashboardLayout>
     )
   }
 
+  // Halaman Kategori Transaksi.
   if (currentPage === 'categories') {
     return (
-      <CategoriesPage
-        onBack={() => setCurrentPage('dashboard')}
-      />
+      <DashboardLayout
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+        onLogout={handleLogout}
+      >
+        <CategoriesPage
+          onBack={() => setCurrentPage('dashboard')}
+        />
+      </DashboardLayout>
     )
   }
 
+  // Halaman Transaksi.
   if (currentPage === 'transactions') {
     return (
-      <TransactionsPage
-        onBack={() => setCurrentPage('dashboard')}
-        onDataChanged={refreshDashboard}
-      />
+      <DashboardLayout
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+        onLogout={handleLogout}
+      >
+        <TransactionsPage
+          onBack={() => setCurrentPage('dashboard')}
+          onDataChanged={refreshDashboard}
+        />
+      </DashboardLayout>
     )
   }
 
+  // Dashboard utama.
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        {/* Header */}
-        <header className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setCurrentPage('accounts')}
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
-            >
-              <span aria-hidden="true">▤</span>
-              Akun Keuangan
-            </button>
+    <DashboardLayout
+      currentPage="dashboard"
+      onNavigate={setCurrentPage}
+      onLogout={handleLogout}
+    >
+      <main className="min-w-0 text-slate-900">
+        {/* Header Dashboard */}
+        <header className="mb-8">
+          <p className="text-sm font-semibold tracking-wide text-emerald-600">
+            PERSONAL FINANCE
+          </p>
 
-            <button
-              type="button"
-              onClick={() => setCurrentPage('categories')}
-              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
-            >
-              <span aria-hidden="true">▦</span>
-              Kategori Transaksi
-            </button>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+            Dashboard
+          </h1>
 
-            <button
-              type="button"
-              onClick={() => setCurrentPage('transactions')}
-              className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700"
-            >
-              <span aria-hidden="true">↔</span>
-              Transaksi
-            </button>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              Ringkasan keuangan
-            </div>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-white px-4 py-3 text-sm font-semibold text-rose-600 shadow-sm transition hover:bg-rose-50"
-            >
-              Keluar
-            </button>
-          </div>
+          <p className="mt-2 text-sm text-slate-500">
+            Selamat datang kembali! Berikut ringkasan kondisi keuanganmu.
+          </p>
         </header>
 
-        {/* Summary cards */}
+        {/* Summary Cards */}
         <section
           aria-label="Ringkasan keuangan"
           className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
@@ -534,7 +547,7 @@ function App() {
             value={summary.totalBalance}
             description="Akumulasi saldo seluruh akun"
             symbol="Rp"
-            symbolClass="bg-indigo-50 text-indigo-700"
+            symbolClass="bg-emerald-50 text-emerald-700"
           />
 
           <StatCard
@@ -562,7 +575,7 @@ function App() {
           />
         </section>
 
-        {/* Account balances */}
+        {/* Account Balances */}
         <section className="mb-8">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -575,7 +588,7 @@ function App() {
               </p>
             </div>
 
-            <span className="rounded-lg bg-indigo-50 px-3 py-2 text-xs font-semibold text-indigo-700">
+            <span className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
               {accounts.length} akun
             </span>
           </div>
@@ -591,6 +604,14 @@ function App() {
               <p className="mt-1 text-sm text-slate-500">
                 Tambahkan akun untuk melihat saldo di Dashboard.
               </p>
+
+              <button
+                type="button"
+                onClick={() => setCurrentPage('accounts')}
+                className="mt-4 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+              >
+                Tambah Akun
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -618,11 +639,11 @@ function App() {
                 return (
                   <article
                     key={account.id}
-                    className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md"
+                    className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-center gap-3">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-2xl">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-2xl">
                           {accountTypeIcons[account.type] ?? '💳'}
                         </div>
 
@@ -658,7 +679,7 @@ function App() {
           )}
         </section>
 
-        {/* Budget and transactions */}
+        {/* Budget and Recent Transactions */}
         <section className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-5">
           <Card id="budgets" className="xl:col-span-3">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -667,7 +688,7 @@ function App() {
                 subtitle="Pantau penggunaan anggaran setiap kategori"
               />
 
-              <span className="rounded-lg bg-indigo-50 px-3 py-2 text-xs font-semibold text-indigo-700">
+              <span className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
                 {summary.budgets.length} kategori
               </span>
             </div>
@@ -814,7 +835,7 @@ function App() {
           </Card>
         </section>
 
-        {/* Savings goals */}
+        {/* Savings Goals */}
         <section>
           <Card id="savings">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -843,7 +864,7 @@ function App() {
                 {summary.savingsGoals.map((goal) => (
                   <div
                     key={goal.id}
-                    className="rounded-xl border border-slate-200 p-4 transition hover:border-indigo-200 hover:shadow-sm"
+                    className="rounded-xl border border-slate-200 p-4 transition hover:border-emerald-200 hover:shadow-sm"
                   >
                     <div className="mb-4 flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-center gap-3">
@@ -916,8 +937,8 @@ function App() {
         <footer className="mt-8 border-t border-slate-200 pt-5 text-center text-xs text-slate-400">
           FinTrack · Personal Finance Management
         </footer>
-      </div>
-    </main>
+      </main>
+    </DashboardLayout>
   )
 }
 
