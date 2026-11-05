@@ -1,0 +1,9 @@
+{
+  "name": "fintrack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FinTrack monorepo root. Dependencies live in backend/ and frontend/.",
+  "scripts": {
+    "build": "cd backend && npm install && npx prisma generate && cd ../frontend && npm install && npm run build"
+  }
+}
