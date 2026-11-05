@@ -1,0 +1,8 @@
+{
+  "name": "fintrack",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "your-build-command-here"
+  },
+  "dependencies": {}
+}
