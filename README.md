@@ -18,7 +18,6 @@ You can access the deployed application through the link above. Register for an 
 - **Category Management** – Organize financial transactions using customizable categories.
 - **Budget Management** – Set spending budgets and monitor expenses against budget limits.
 - **Savings Goals** – Create and track personal savings targets.
-- **Progressive Web App (PWA)** – Support for installable web application functionality.
 
 ## Tech Stack
 
@@ -28,8 +27,7 @@ You can access the deployed application through the link above. Register for an 
 - Vite
 - Tailwind CSS
 - Axios
-- Vite PWA Plugin
-
+  
 ### Backend
 - Node.js
 - Express.js
