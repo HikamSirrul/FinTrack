@@ -99,7 +99,7 @@ router.get('/summary', async (req, res) => {
         },
       }),
 
-      // Lima transaksi terbaru
+      // Seluruh riwayat transaksi untuk ditampilkan dalam panel scroll Dashboard
       prisma.transaction.findMany({
         where: { userId },
         include: {
@@ -110,7 +110,6 @@ router.get('/summary', async (req, res) => {
           { date: 'desc' },
           { createdAt: 'desc' },
         ],
-        take: 5,
       }),
 
       // Sasaran tabungan
