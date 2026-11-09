@@ -147,6 +147,7 @@ export default function CategoriesPage({ onDataChanged }: {
       }
 
       await loadCategories()
+      await onDataChanged?.()
     } catch (err: unknown) {
       setError(
         getErrorMessage(err) ||
