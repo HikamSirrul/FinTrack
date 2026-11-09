@@ -44,22 +44,16 @@ export default function BudgetsPage() {
     setLoading(true)
     setError('')
     try {
-      const startDate = new Date(filterYear, filterMonth - 1, 1).toISOString()
-      const endDate = new Date(filterYear, filterMonth, 0, 23, 59, 59, 999).toISOString()
-      const [budgetResponse, categoryResponse, transactionResponse] = await Promise.all([
+      const [budgetResponse, categoryResponse] = await Promise.all([
         api.get('/budgets', { params: { month: filterMonth, year: filterYear } }),
         api.get('/categories'),
-        api.get('/transactions', { params: { startDate, endDate, type: 'EXPENSE' } }),
       ])
       const rows: Budget[] = budgetResponse.data.budgets ?? []
       setBudgets(rows)
       setCategories((categoryResponse.data.categories ?? []).filter((item: Category) => item.type === 'EXPENSE'))
-      const transactions = transactionResponse.data.transactions ?? []
       const totals: Record<string, number> = {}
-      for (const transaction of transactions) {
-        if (transaction.type === 'EXPENSE' && transaction.categoryId) {
-          totals[transaction.categoryId] = (totals[transaction.categoryId] ?? 0) + Number(transaction.amount || 0)
-        }
+      for (const budget of rows) {
+        totals[budget.categoryId] = Number((budget as Budget & { spentAmount?: number }).spentAmount ?? 0)
       }
       setSpentByCategory(totals)
     } catch (err) {
