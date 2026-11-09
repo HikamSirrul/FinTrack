@@ -819,7 +819,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div className="max-h-[270px] space-y-4 overflow-y-auto overscroll-contain pr-2 [scrollbar-color:#cbd5e1_transparent] [scrollbar-width:thin]">
+              <div className="max-h-[240px] space-y-4 overflow-y-auto overscroll-contain pr-2 [scrollbar-color:#cbd5e1_transparent] [scrollbar-width:thin]">
                 {summary.recentTransactions.map((transaction) => (
                   <div
                     key={transaction.id}
