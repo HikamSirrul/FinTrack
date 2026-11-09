@@ -109,6 +109,7 @@ export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: ()
       setContributionId(null)
       setSuccess(`Setoran ${currency(amount)} berhasil ditambahkan ke ${goal.name}.`)
       await loadGoals()
+      await onDataChanged?.()
     } catch (err) {
       setError(errorMessage(err) || 'Gagal menambahkan setoran.')
     }
@@ -120,6 +121,7 @@ export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: ()
       setSuccess('Target tabungan berhasil dihapus.')
       if (editingId === goal.id) resetForm()
       await loadGoals()
+      await onDataChanged?.()
     } catch (err) {
       setError(errorMessage(err) || 'Gagal menghapus target tabungan.')
     }
