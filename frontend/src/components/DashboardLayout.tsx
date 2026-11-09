@@ -56,21 +56,6 @@ export default function DashboardLayout({
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const navigateSection = (section: 'budgets' | 'savings') => {
-    if (currentPage !== 'dashboard') {
-      onNavigate('dashboard')
-    }
-
-    setMobileMenuOpen(false)
-
-    window.setTimeout(() => {
-      document.getElementById(section)?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
-    }, 100)
-  }
-
   const navClass = (active: boolean) =>
     `flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition ${
       active
