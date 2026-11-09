@@ -103,7 +103,7 @@ function StatCard({
   symbolClass,
 }: StatCardProps) {
   return (
-    <Card>
+    <Card className="border-0 shadow-md shadow-slate-200/60 transition duration-200 hover:-translate-y-1 hover:shadow-lg">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-medium text-slate-500">
@@ -240,6 +240,7 @@ function App() {
 
   // Status autentikasi
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userName, setUserName] = useState('')
   const [authLoading, setAuthLoading] = useState(true)
 
   // Halaman publik
@@ -301,10 +302,11 @@ function App() {
       }
 
       try {
-        await api.get('/auth/me')
+        const profileResponse = await api.get('/auth/me')
 
         if (!active) return
 
+        setUserName(profileResponse.data?.user?.name || 'Pengguna')
         setIsAuthenticated(true)
         await refreshDashboard()
       } catch (authError) {
@@ -345,6 +347,14 @@ function App() {
    * Dipanggil setelah login atau registrasi berhasil.
    */
   const handleAuthSuccess = async () => {
+    try {
+      const profileResponse = await api.get('/auth/me')
+      setUserName(profileResponse.data?.user?.name || 'Pengguna')
+    } catch (profileError) {
+      console.error('Gagal mengambil profil pengguna:', profileError)
+      setUserName('Pengguna')
+    }
+
     setIsAuthenticated(true)
     setAuthPage('home')
     setCurrentPage('dashboard')
@@ -363,6 +373,7 @@ function App() {
     localStorage.removeItem('fintrack_token')
 
     setIsAuthenticated(false)
+    setUserName('')
     setAuthPage('home')
     setCurrentPage('dashboard')
 
@@ -482,6 +493,7 @@ function App() {
       >
         <AccountsPage
           onBack={() => setCurrentPage('dashboard')}
+          onDataChanged={refreshDashboard}
         />
       </DashboardLayout>
     )
@@ -491,7 +503,7 @@ function App() {
   if (currentPage === 'budgets') {
     return (
       <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}>
-        <BudgetsPage />
+        <BudgetsPage onDataChanged={refreshDashboard} />
       </DashboardLayout>
     )
   }
@@ -500,7 +512,7 @@ function App() {
   if (currentPage === 'savings') {
     return (
       <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}>
-        <SavingsGoalsPage />
+        <SavingsGoalsPage onDataChanged={refreshDashboard} />
       </DashboardLayout>
     )
   }
@@ -515,6 +527,7 @@ function App() {
       >
         <CategoriesPage
           onBack={() => setCurrentPage('dashboard')}
+          onDataChanged={refreshDashboard}
         />
       </DashboardLayout>
     )
@@ -544,19 +557,29 @@ function App() {
       onLogout={handleLogout}
     >
       <main className="min-w-0 text-slate-900">
-        {/* Header Dashboard */}
-        <header className="mb-8">
-          <p className="text-sm font-semibold tracking-wide text-emerald-600">
-            PERSONAL FINANCE
-          </p>
-
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-            Dashboard
-          </h1>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Selamat datang kembali! Berikut ringkasan kondisi keuanganmu.
-          </p>
+        {/* Welcome Dashboard */}
+        <header className="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500 px-6 py-7 text-white shadow-lg shadow-emerald-900/10 sm:px-8 sm:py-9">
+          <div className="pointer-events-none absolute -right-12 -top-20 h-64 w-64 rounded-full border-[28px] border-white/10" />
+          <div className="pointer-events-none absolute -bottom-24 right-32 h-52 w-52 rounded-full bg-white/5" />
+          <div className="relative flex flex-wrap items-end justify-between gap-5">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-100">
+                Personal Finance Overview
+              </p>
+              <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
+                Halo, {userName || 'Pengguna'}! 👋
+              </h1>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-emerald-50 sm:text-base">
+                Senang melihatmu kembali. Yuk, pantau dan kelola kondisi keuanganmu hari ini.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
+              <p className="text-xs font-medium text-emerald-100">Ringkasan keuangan</p>
+              <p className="mt-1 text-sm font-semibold">
+                {new Intl.DateTimeFormat('id-ID', { dateStyle: 'full' }).format(new Date())}
+              </p>
+            </div>
+          </div>
         </header>
 
         {/* Summary Cards */}
@@ -661,7 +684,7 @@ function App() {
                 return (
                   <article
                     key={account.id}
-                    className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md"
+                    className="min-w-0 rounded-2xl border border-slate-100 bg-white p-5 shadow-md shadow-slate-200/50 transition duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-center gap-3">
@@ -703,7 +726,7 @@ function App() {
 
         {/* Budget and Recent Transactions */}
         <section className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-5">
-          <Card id="budgets" className="xl:col-span-3">
+          <Card id="budgets" className="border-0 shadow-md shadow-slate-200/60 xl:col-span-3">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Anggaran bulanan"
@@ -777,11 +800,11 @@ function App() {
             )}
           </Card>
 
-          <Card id="transactions" className="xl:col-span-2">
+          <Card id="transactions" className="border-0 shadow-md shadow-slate-200/60 xl:col-span-2">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Transaksi terbaru"
-                subtitle="Lima transaksi terakhir"
+                subtitle="Geser untuk melihat riwayat transaksi lainnya"
               />
             </div>
 
@@ -796,7 +819,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="max-h-[270px] space-y-4 overflow-y-auto overscroll-contain pr-2 [scrollbar-color:#cbd5e1_transparent] [scrollbar-width:thin]">
                 {summary.recentTransactions.map((transaction) => (
                   <div
                     key={transaction.id}
@@ -859,7 +882,7 @@ function App() {
 
         {/* Savings Goals */}
         <section>
-          <Card id="savings">
+          <Card id="savings" className="border-0 shadow-md shadow-slate-200/60">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Sasaran tabungan"
