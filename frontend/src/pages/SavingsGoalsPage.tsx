@@ -25,7 +25,7 @@ function dateInput(value: string | null) {
   return Number.isNaN(date.getTime()) ? '' : date.toISOString().slice(0, 10)
 }
 
-export default function SavingsGoalsPage() {
+export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: () => Promise<void> }) {
   const [goals, setGoals] = useState<Goal[]>([])
   const [form, setForm] = useState<GoalForm>(emptyForm)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -85,6 +85,7 @@ export default function SavingsGoalsPage() {
       }
       resetForm()
       await loadGoals()
+      await onDataChanged?.()
     } catch (err) {
       setError(errorMessage(err) || 'Gagal menyimpan target tabungan.')
     } finally {
