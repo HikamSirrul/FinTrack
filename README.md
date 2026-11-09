@@ -4,9 +4,7 @@
 
 ## Live Demo
 
-<https://fintrack-hikamsrl.netlify.app>
-
-You can access the deployed application through the link above. Register for an account or log in to explore FinTrack's features and manage your personal finances.
+FinTrack is deployed on Netlify. The deployment address is managed through the project's Netlify dashboard.
 
 ## Features
 
