@@ -40,9 +40,9 @@ function formatCurrency(value: number | string) {
   }).format(Number(value) || 0)
 }
 
-export default function AccountsPage({
-}: {
+export default function AccountsPage({ onDataChanged }: {
   onBack: () => void
+  onDataChanged?: () => Promise<void>
 }) {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [form, setForm] = useState<AccountForm>(initialForm)
@@ -139,6 +139,7 @@ export default function AccountsPage({
       setForm(initialForm)
       setEditingId(null)
       await loadAccounts()
+      await onDataChanged?.()
     } catch (err: unknown) {
       const message =
         typeof err === 'object' &&
