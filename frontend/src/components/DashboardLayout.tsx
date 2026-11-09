@@ -7,6 +7,8 @@ type Page =
   | 'accounts'
   | 'categories'
   | 'transactions'
+  | 'budgets'
+  | 'savings'
 
 type DashboardLayoutProps = {
   currentPage: Page
@@ -36,6 +38,8 @@ const navigation = [
     page: 'transactions' as Page,
     icon: '↔',
   },
+  { label: 'Anggaran', page: 'budgets' as Page, icon: '◷' },
+  { label: 'Target Tabungan', page: 'savings' as Page, icon: '♧' },
 ]
 
 export default function DashboardLayout({
@@ -110,31 +114,7 @@ export default function DashboardLayout({
           </nav>
         </div>
 
-        <div>
-          <p className="mb-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">
-            Perencanaan
-          </p>
 
-          <nav className="space-y-1">
-            <button
-              type="button"
-              onClick={() => navigateSection('budgets')}
-              className={navClass(false)}
-            >
-              <span className="w-5 text-center text-lg">◷</span>
-              Anggaran
-            </button>
-
-            <button
-              type="button"
-              onClick={() => navigateSection('savings')}
-              className={navClass(false)}
-            >
-              <span className="w-5 text-center text-lg">♧</span>
-              Target Tabungan
-            </button>
-          </nav>
-        </div>
       </div>
 
       <div className="border-t border-slate-100 p-4">
