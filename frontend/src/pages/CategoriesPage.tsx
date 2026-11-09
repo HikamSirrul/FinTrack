@@ -36,9 +36,9 @@ function getErrorMessage(err: unknown): string | undefined {
   ).response?.data?.message
 }
 
-export default function CategoriesPage({
-}: {
+export default function CategoriesPage({ onDataChanged }: {
   onBack: () => void
+  onDataChanged?: () => Promise<void>
 }) {
   const [categories, setCategories] = useState<Category[]>([])
   const [form, setForm] = useState<CategoryForm>(initialForm)
@@ -119,6 +119,7 @@ export default function CategoriesPage({
       setForm(initialForm)
       setEditingId(null)
       await loadCategories()
+      await onDataChanged?.()
     } catch (err: unknown) {
       setError(getErrorMessage(err) || 'Gagal menyimpan kategori.')
     } finally {
