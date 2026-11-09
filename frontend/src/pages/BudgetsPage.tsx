@@ -28,7 +28,7 @@ function errorMessage(error: unknown) {
   return undefined
 }
 
-export default function BudgetsPage() {
+export default function BudgetsPage({ onDataChanged }: { onDataChanged?: () => Promise<void> }) {
   const [budgets, setBudgets] = useState<Budget[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [form, setForm] = useState<FormState>(initialForm)
@@ -101,6 +101,7 @@ export default function BudgetsPage() {
       }
       resetForm()
       await loadData()
+      await onDataChanged?.()
     } catch (err) {
       setError(errorMessage(err) || 'Gagal menyimpan anggaran.')
     } finally {
