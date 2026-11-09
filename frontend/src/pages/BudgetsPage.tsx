@@ -115,6 +115,7 @@ export default function BudgetsPage({ onDataChanged }: { onDataChanged?: () => P
       await api.delete(`/budgets/${item.id}`)
       setSuccess('Anggaran berhasil dihapus.')
       await loadData()
+      await onDataChanged?.()
     } catch (err) {
       setError(errorMessage(err) || 'Gagal menghapus anggaran.')
     }
