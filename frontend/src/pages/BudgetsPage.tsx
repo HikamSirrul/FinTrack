@@ -10,6 +10,7 @@ type Budget = {
   year: number
   categoryId: string
   category: Category
+  spentAmount?: number
 }
 type FormState = { categoryId: string; amount: string; month: number; year: number }
 
@@ -53,7 +54,7 @@ export default function BudgetsPage() {
       setCategories((categoryResponse.data.categories ?? []).filter((item: Category) => item.type === 'EXPENSE'))
       const totals: Record<string, number> = {}
       for (const budget of rows) {
-        totals[budget.categoryId] = Number((budget as Budget & { spentAmount?: number }).spentAmount ?? 0)
+        totals[budget.categoryId] = Number(budget.spentAmount ?? 0)
       }
       setSpentByCategory(totals)
     } catch (err) {
