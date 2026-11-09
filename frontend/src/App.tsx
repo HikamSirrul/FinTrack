@@ -8,6 +8,8 @@ import type { DashboardSummary } from './types/dashboard'
 import AccountsPage from './pages/AccountsPage'
 import CategoriesPage from './pages/CategoriesPage'
 import TransactionsPage from './pages/TransactionsPage'
+import BudgetsPage from './pages/BudgetsPage'
+import SavingsGoalsPage from './pages/SavingsGoalsPage'
 import RegisterPage from './pages/Register'
 import LoginPage from './pages/Login'
 import HomePage from './pages/Home'
@@ -479,6 +481,24 @@ function App() {
         <AccountsPage
           onBack={() => setCurrentPage('dashboard')}
         />
+      </DashboardLayout>
+    )
+  }
+
+  // Halaman Anggaran Bulanan.
+  if (currentPage === 'budgets') {
+    return (
+      <DashboardLayout currentPage={currentPage} onNavigate={setCurrentPage} onLogout={handleLogout}>
+        <BudgetsPage />
+      </DashboardLayout>
+    )
+  }
+
+  // Halaman Target Tabungan.
+  if (currentPage === 'savings') {
+    return (
+      <DashboardLayout currentPage={currentPage} onNavigate={setCurrentPage} onLogout={handleLogout}>
+        <SavingsGoalsPage />
       </DashboardLayout>
     )
   }
