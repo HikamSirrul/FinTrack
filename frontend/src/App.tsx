@@ -8,6 +8,8 @@ import type { DashboardSummary } from './types/dashboard'
 import AccountsPage from './pages/AccountsPage'
 import CategoriesPage from './pages/CategoriesPage'
 import TransactionsPage from './pages/TransactionsPage'
+import BudgetsPage from './pages/BudgetsPage'
+import SavingsGoalsPage from './pages/SavingsGoalsPage'
 import RegisterPage from './pages/Register'
 import LoginPage from './pages/Login'
 import HomePage from './pages/Home'
@@ -29,6 +31,8 @@ type Page =
   | 'accounts'
   | 'categories'
   | 'transactions'
+  | 'budgets'
+  | 'savings'
 
 type AuthPage = 'home' | 'login' | 'register'
 
@@ -473,7 +477,7 @@ function App() {
     return (
       <DashboardLayout
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
       >
         <AccountsPage
@@ -483,12 +487,30 @@ function App() {
     )
   }
 
+  // Halaman Anggaran Bulanan.
+  if (currentPage === 'budgets') {
+    return (
+      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}>
+        <BudgetsPage />
+      </DashboardLayout>
+    )
+  }
+
+  // Halaman Target Tabungan.
+  if (currentPage === 'savings') {
+    return (
+      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}>
+        <SavingsGoalsPage />
+      </DashboardLayout>
+    )
+  }
+
   // Halaman Kategori Transaksi.
   if (currentPage === 'categories') {
     return (
       <DashboardLayout
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
       >
         <CategoriesPage
@@ -503,7 +525,7 @@ function App() {
     return (
       <DashboardLayout
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
       >
         <TransactionsPage
@@ -518,7 +540,7 @@ function App() {
   return (
     <DashboardLayout
       currentPage="dashboard"
-      onNavigate={setCurrentPage}
+      onNavigate={(page: Page) => setCurrentPage(page)}
       onLogout={handleLogout}
     >
       <main className="min-w-0 text-slate-900">

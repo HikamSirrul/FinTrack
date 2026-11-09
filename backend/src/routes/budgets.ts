@@ -1,7 +1,7 @@
 
 import { Router } from 'express'
 import { z } from 'zod'
-import { CategoryType } from '@prisma/client'
+import { CategoryType, TransactionType } from '@prisma/client'
 import prisma from '../config/prisma.js'
 import { authenticate } from '../middleware/auth.js'
 
@@ -65,9 +65,40 @@ router.get('/', async (req, res) => {
       orderBy: [{ year: 'desc' }, { month: 'desc' }],
     })
 
+    let budgetsWithSpending = budgets
+
+    // Hitung pengeluaran per kategori untuk periode yang diminta.
+    // Agregasi database menghindari batas 100 transaksi pada endpoint transaksi.
+    if (month !== undefined && year !== undefined && budgets.length > 0) {
+      const startOfMonth = new Date(year, month - 1, 1)
+      const startOfNextMonth = new Date(year, month, 1)
+      const spending = await prisma.transaction.groupBy({
+        by: ['categoryId'],
+        where: {
+          userId: req.userId!,
+          type: TransactionType.EXPENSE,
+          categoryId: { in: budgets.map((budget) => budget.categoryId) },
+          date: { gte: startOfMonth, lt: startOfNextMonth },
+        },
+        _sum: { amount: true },
+      })
+
+      const spendingByCategory = new Map(
+        spending.map((item) => [
+          item.categoryId,
+          Number(item._sum.amount ?? 0),
+        ]),
+      )
+
+      budgetsWithSpending = budgets.map((budget) => ({
+        ...budget,
+        spentAmount: spendingByCategory.get(budget.categoryId) ?? 0,
+      }))
+    }
+
     res.status(200).json({
       message: 'Anggaran berhasil diambil.',
-      budgets,
+      budgets: budgetsWithSpending,
     })
   } catch (error) {
     console.error('Get budgets error:', error)
