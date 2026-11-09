@@ -179,6 +179,7 @@ export default function AccountsPage({ onDataChanged }: {
       }
 
       await loadAccounts()
+      await onDataChanged?.()
     } catch (err: unknown) {
       const message =
         typeof err === 'object' &&
