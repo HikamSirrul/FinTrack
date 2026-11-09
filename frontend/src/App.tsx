@@ -31,6 +31,8 @@ type Page =
   | 'accounts'
   | 'categories'
   | 'transactions'
+  | 'budgets'
+  | 'savings'
 
 type AuthPage = 'home' | 'login' | 'register'
 
@@ -475,7 +477,7 @@ function App() {
     return (
       <DashboardLayout
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
       >
         <AccountsPage
@@ -488,7 +490,7 @@ function App() {
   // Halaman Anggaran Bulanan.
   if (currentPage === 'budgets') {
     return (
-      <DashboardLayout currentPage={currentPage} onNavigate={setCurrentPage} onLogout={handleLogout}>
+      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}>
         <BudgetsPage />
       </DashboardLayout>
     )
@@ -497,7 +499,7 @@ function App() {
   // Halaman Target Tabungan.
   if (currentPage === 'savings') {
     return (
-      <DashboardLayout currentPage={currentPage} onNavigate={setCurrentPage} onLogout={handleLogout}>
+      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}>
         <SavingsGoalsPage />
       </DashboardLayout>
     )
@@ -508,7 +510,7 @@ function App() {
     return (
       <DashboardLayout
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
       >
         <CategoriesPage
@@ -523,7 +525,7 @@ function App() {
     return (
       <DashboardLayout
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
       >
         <TransactionsPage
@@ -538,7 +540,7 @@ function App() {
   return (
     <DashboardLayout
       currentPage="dashboard"
-      onNavigate={setCurrentPage}
+      onNavigate={(page: Page) => setCurrentPage(page)}
       onLogout={handleLogout}
     >
       <main className="min-w-0 text-slate-900">
