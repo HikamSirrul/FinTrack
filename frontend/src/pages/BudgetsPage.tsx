@@ -44,10 +44,12 @@ export default function BudgetsPage() {
     setLoading(true)
     setError('')
     try {
+      const startDate = new Date(filterYear, filterMonth - 1, 1).toISOString()
+      const endDate = new Date(filterYear, filterMonth, 0, 23, 59, 59, 999).toISOString()
       const [budgetResponse, categoryResponse, transactionResponse] = await Promise.all([
         api.get('/budgets', { params: { month: filterMonth, year: filterYear } }),
         api.get('/categories'),
-        api.get('/transactions', { params: { month: filterMonth, year: filterYear, type: 'EXPENSE' } }),
+        api.get('/transactions', { params: { startDate, endDate, type: 'EXPENSE' } }),
       ])
       const rows: Budget[] = budgetResponse.data.budgets ?? []
       setBudgets(rows)
