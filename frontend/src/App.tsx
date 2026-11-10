@@ -17,7 +17,6 @@ import HomePage from './pages/Home'
 import PublicNavbar from './components/PublicNavbar'
 import DashboardLayout from './components/DashboardLayout'
 import api from './lib/api'
-import ThemeToggle from './components/ThemeToggle'
 
 type DashboardAccount = {
   id: string
