@@ -696,7 +696,7 @@ export default function TransactionsPage({
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+                className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
               >
                 {saving
                   ? 'Menyimpan...'
