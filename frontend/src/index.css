@@ -25,12 +25,31 @@ body {
   min-width: min(100%, 280px);
 }
 
-/* Anggaran dan transaksi menggunakan dua kolom fleksibel tanpa memaksa tinggi sama. */
+/* Kartu saldo akun: maksimal empat kolom pada layar lebar. */
+.dashboard-account-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* Anggaran dan transaksi direntangkan agar memiliki tinggi yang sama. */
 .dashboard-two-column-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch;
+}
+
+@media (max-width: 1023px) {
+  .dashboard-account-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .dashboard-account-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 
@@ -164,8 +183,17 @@ html.dark [class~="bg-slate-900/40"] {
 }
 
 html.dark .dashboard-auto-grid > *,
+html.dark .dashboard-account-grid > *,
 html.dark .dashboard-two-column-grid > * {
   color: #e2e8f0;
+}
+
+html.dark .dashboard-account-grid .bg-slate-200 {
+  background-color: #334155 !important;
+}
+
+html.dark #savings .bg-slate-50\/70 {
+  background-color: rgb(30 41 59 / 55%) !important;
 }
 
 
