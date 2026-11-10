@@ -16,6 +16,7 @@ import HomePage from './pages/Home'
 
 import PublicNavbar from './components/PublicNavbar'
 import DashboardLayout from './components/DashboardLayout'
+import SavingsContributionChart from './components/SavingsContributionChart'
 import api from './lib/api'
 
 type DashboardAccount = {
@@ -873,7 +874,7 @@ function App() {
             )}
           </Card>
 
-          <Card id="transactions" className="flex h-full min-h-0 flex-col border-0 shadow-md shadow-slate-200/60">
+          <Card id="transactions" className="dashboard-transactions-card flex h-full min-h-0 flex-col border-0 shadow-md shadow-slate-200/60">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Transaksi terbaru"
@@ -892,7 +893,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain pr-2 [scrollbar-color:#cbd5e1_transparent] [scrollbar-width:thin]">
+              <div className="transactions-scroll min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain pr-2 [scrollbar-color:#cbd5e1_transparent] [scrollbar-width:thin]">
                 {summary.recentTransactions.map((transaction) => (
                   <div
                     key={transaction.id}
@@ -1013,38 +1014,7 @@ function App() {
                       color="#059669"
                     />
 
-                    {/* Grafik garis ringkas: posisi dana terkumpul terhadap target 0–100%. */}
-                    <div className="mt-3" aria-label={`Visualisasi progres ${goal.name}`}>
-                      <svg
-                        viewBox="0 0 100 18"
-                        className="h-5 w-full overflow-visible"
-                        role="img"
-                        aria-label={`Progres ${goal.percentage.toFixed(0)} persen dari target`}
-                      >
-                        <line x1="1" y1="8" x2="99" y2="8" stroke="#d6e2df" strokeWidth="2" strokeLinecap="round" />
-                        <line
-                          x1="1"
-                          y1="8"
-                          x2={1 + Math.min(100, Math.max(0, Number(goal.percentage) || 0)) * 0.98}
-                          y2="8"
-                          stroke="#86a99f"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                        />
-                        <circle
-                          cx={1 + Math.min(100, Math.max(0, Number(goal.percentage) || 0)) * 0.98}
-                          cy="8"
-                          r="3.5"
-                          fill="#6f968b"
-                          stroke="#ffffff"
-                          strokeWidth="1.5"
-                        />
-                      </svg>
-                      <div className="flex justify-between text-[10px] text-slate-400">
-                        <span>0%</span>
-                        <span>Target 100%</span>
-                      </div>
-                    </div>
+                    <SavingsContributionChart contributions={goal.contributions ?? []} />
 
                     <div className="mt-4 flex items-start justify-between gap-3">
                       <div>
