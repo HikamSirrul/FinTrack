@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import api from '../lib/api'
 
 type TransactionType = 'INCOME' | 'EXPENSE' | 'TRANSFER'
@@ -465,7 +465,7 @@ export default function TransactionsPage({
           </div>
         )}
 
-        <section className="dashboard-auto-grid">
+        <section className="dashboard-auto-grid" style={{ '--grid-columns': Math.max(1, Math.ceil(Math.sqrt(3))) } as CSSProperties}>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">
               Total Transaksi
