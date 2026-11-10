@@ -132,7 +132,7 @@ export default function BudgetsPage({ onDataChanged }: { onDataChanged?: () => P
       {error && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{error}</div>}
       {success && <div role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">{success}</div>}
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="dashboard-auto-grid">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Total anggaran</p><p className="mt-2 text-2xl font-bold">{currency(totalBudget)}</p></div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Total terpakai</p><p className="mt-2 text-2xl font-bold text-rose-600">{currency(totalSpent)}</p></div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Sisa anggaran</p><p className={`mt-2 text-2xl font-bold ${totalBudget - totalSpent < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{currency(totalBudget - totalSpent)}</p></div>
@@ -172,14 +172,14 @@ export default function BudgetsPage({ onDataChanged }: { onDataChanged?: () => P
           </div>
         </div>
         {loading ? <p className="py-12 text-center text-sm text-slate-500">Memuat anggaran...</p> : budgets.length === 0 ? <div className="py-12 text-center"><p className="font-semibold text-slate-700">Belum ada anggaran untuk periode ini</p><p className="mt-1 text-sm text-slate-500">Tambahkan anggaran menggunakan formulir di atas.</p></div> : (
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <div className="mt-6 dashboard-auto-grid">
             {budgets.map(item => {
               const spent = spentByCategory[item.categoryId] ?? 0
               const percentage = Number(item.amount) > 0 ? Math.round(spent / Number(item.amount) * 100) : 0
               const over = spent > Number(item.amount)
               return <article key={item.id} className="rounded-xl border border-slate-200 p-5">
                 <div className="flex items-start justify-between gap-3"><div className="flex items-center gap-3"><span className="h-3 w-3 rounded-full" style={{ backgroundColor: item.category.color }} /><div><h3 className="font-semibold">{item.category.name}</h3><p className="mt-1 text-xs text-slate-500">{monthNames[item.month-1]} {item.year}</p></div></div><span className={`rounded-lg px-2 py-1 text-xs font-semibold ${over ? 'bg-rose-50 text-rose-700' : percentage >= 80 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>{percentage}% terpakai</span></div>
-                <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100"><div className={`h-full rounded-full ${over ? 'bg-rose-500' : percentage >= 80 ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{ width: `${Math.min(100, percentage)}%` }} /></div>
+                <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full transition-all duration-300" style={{ width: `${Math.min(100, Math.max(0, percentage))}%`, backgroundColor: item.category.color || '#059669' }} /></div>
                 <div className="mt-3 flex justify-between gap-3 text-sm"><span className="text-slate-500">Terpakai <strong className="text-slate-800">{currency(spent)}</strong></span><span className="text-slate-500">Batas <strong className="text-slate-800">{currency(item.amount)}</strong></span></div>
                 <p className={`mt-2 text-xs font-medium ${over ? 'text-rose-600' : 'text-emerald-700'}`}>{over ? `Melebihi batas sebesar ${currency(spent - Number(item.amount))}` : `Sisa anggaran ${currency(Number(item.amount) - spent)}`}</p>
                 <div className="mt-4 flex gap-2 border-t border-slate-100 pt-4"><button type="button" onClick={() => startEdit(item)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium hover:bg-slate-50">Edit</button><button type="button" onClick={() => void handleDelete(item)} className="rounded-lg border border-rose-200 px-3 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50">Hapus</button></div>
