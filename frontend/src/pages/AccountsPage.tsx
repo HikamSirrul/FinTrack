@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import api from '../lib/api'
 
 type AccountType = 'CASH' | 'BANK' | 'E_WALLET' | 'OTHER'
@@ -351,7 +351,7 @@ export default function AccountsPage({ onDataChanged }: {
               Belum ada akun. Tambahkan akun pertama Anda melalui formulir di atas.
             </p>
           ) : (
-            <div className="mt-5 dashboard-auto-grid">
+            <div className="mt-5 dashboard-auto-grid" style={{ '--grid-columns': Math.max(1, Math.ceil(Math.sqrt(accounts.length))) } as CSSProperties}>
               {accounts.map((account) => (
                 <article
                   key={account.id}
