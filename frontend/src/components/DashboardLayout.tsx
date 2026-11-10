@@ -1,6 +1,7 @@
 
 import { useState } from 'react'
 import type { ReactNode } from 'react'
+import ThemeToggle from './ThemeToggle'
 
 type Page =
   | 'dashboard'
@@ -14,6 +15,8 @@ type DashboardLayoutProps = {
   currentPage: Page
   onNavigate: (page: Page) => void
   onLogout: () => void
+  isDarkMode: boolean
+  onToggleTheme: () => void
   children: ReactNode
 }
 
@@ -46,6 +49,8 @@ export default function DashboardLayout({
   currentPage,
   onNavigate,
   onLogout,
+  isDarkMode,
+  onToggleTheme,
   children,
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -126,6 +131,7 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
+      <ThemeToggle isDarkMode={isDarkMode} onToggleTheme={onToggleTheme} className="fixed bottom-5 right-5 z-[60]" />
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-slate-200 bg-white lg:flex">
         {sidebarContent}
