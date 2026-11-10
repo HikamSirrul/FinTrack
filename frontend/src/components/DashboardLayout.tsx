@@ -173,7 +173,7 @@ export default function DashboardLayout({
 
       {/* Mobile sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[min(18rem,calc(100vw-2rem))] flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:hidden ${
           mobileMenuOpen
             ? 'translate-x-0'
             : '-translate-x-full'
@@ -184,7 +184,7 @@ export default function DashboardLayout({
 
       {/* Main content */}
       <div className="min-w-0 lg:ml-64">
-        <div className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto w-full max-w-[1600px] min-w-0 px-3 py-4 sm:p-6 lg:p-8">
           {children}
         </div>
       </div>
