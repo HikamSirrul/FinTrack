@@ -90,7 +90,7 @@ export default function PublicNavbar({
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/95 shadow-sm backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-3 py-3 sm:flex-nowrap sm:px-8 sm:py-4">
         {/* Logo */}
         <button
           type="button"
@@ -104,7 +104,7 @@ export default function PublicNavbar({
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl font-bold text-white transition-all duration-200 group-hover:scale-105 group-hover:bg-emerald-700">
             F
           </span>
-          <span className="text-xl font-bold tracking-tight text-slate-900 transition-colors group-hover:text-emerald-700">
+          <span className="whitespace-nowrap text-lg font-bold tracking-tight text-slate-900 transition-colors group-hover:text-emerald-700 sm:text-xl">
             Fin<span className="text-emerald-600">Track</span>
           </span>
         </button>
@@ -157,7 +157,7 @@ export default function PublicNavbar({
           <button
             type="button"
             onClick={onLogin}
-            className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+            className={`rounded-xl px-2.5 py-2 text-xs font-semibold transition-all duration-200 sm:px-4 sm:text-sm ${
               activePage === 'login'
                 ? 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200'
                 : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-700'
@@ -169,7 +169,7 @@ export default function PublicNavbar({
           <button
             type="button"
             onClick={onRegister}
-            className={`rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition-all duration-200 ${
+            className={`rounded-xl px-2.5 py-2 text-xs font-semibold shadow-sm transition-all duration-200 sm:px-4 sm:py-2.5 sm:text-sm ${
               activePage === 'register'
                 ? 'bg-emerald-800 text-white ring-2 ring-emerald-200'
                 : 'bg-emerald-600 text-white hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md'
