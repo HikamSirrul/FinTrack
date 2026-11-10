@@ -167,3 +167,16 @@ html.dark .dashboard-auto-grid > *,
 html.dark .dashboard-two-column-grid > * {
   color: #e2e8f0;
 }
+
+
+/* Dark mode: hilangkan glow dan shadow dekoratif pada halaman publik dan autentikasi. */
+html.dark .home-page [class*="shadow-"],
+html.dark .auth-page [class*="shadow-"] {
+  box-shadow: none !important;
+}
+
+html.dark .home-page .home-glow,
+html.dark .home-page .home-visual-glow,
+html.dark .auth-page .auth-glow {
+  display: none !important;
+}
