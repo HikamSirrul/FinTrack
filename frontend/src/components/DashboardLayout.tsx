@@ -71,9 +71,11 @@ export default function DashboardLayout({
   const sidebarContent = (
     <>
       <div className="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl font-bold text-white">
-          F
-        </div>
+        <img
+          src="/fintrack-icon.svg"
+          alt="FinTrack"
+          className="h-10 w-10 rounded-xl"
+        />
 
         <span className="text-2xl font-bold tracking-tight">
           <span className="text-emerald-600">Fin</span>
