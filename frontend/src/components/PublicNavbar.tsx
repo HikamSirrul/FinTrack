@@ -1,8 +1,11 @@
 
 import { useEffect, useState } from 'react'
+import ThemeToggle from './ThemeToggle'
 
 type PublicNavbarProps = {
   activePage: 'home' | 'login' | 'register'
+  isDarkMode: boolean
+  onToggleTheme: () => void
   onHome: () => void
   onLogin: () => void
   onRegister: () => void
@@ -12,6 +15,8 @@ type Section = 'home' | 'features' | 'about'
 
 export default function PublicNavbar({
   activePage,
+  isDarkMode,
+  onToggleTheme,
   onHome,
   onLogin,
   onRegister,
@@ -148,6 +153,7 @@ export default function PublicNavbar({
 
         {/* Login dan Register */}
         <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle isDarkMode={isDarkMode} onToggleTheme={onToggleTheme} className="hidden sm:inline-flex" />
           <button
             type="button"
             onClick={onLogin}
