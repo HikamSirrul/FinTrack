@@ -58,7 +58,7 @@ export default function SavingsContributionChart({
   const area = `0,76 ${polyline} 100,76`
 
   return (
-    <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+    <div className="savings-contribution-chart mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
       <div className="mb-2 flex items-center justify-between gap-2">
         <p className="text-xs font-semibold text-slate-600">Grafik setoran</p>
         <p className="text-[10px] text-slate-400">{ordered.length} setoran</p>
