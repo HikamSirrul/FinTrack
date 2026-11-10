@@ -17,6 +17,7 @@ import HomePage from './pages/Home'
 import PublicNavbar from './components/PublicNavbar'
 import DashboardLayout from './components/DashboardLayout'
 import api from './lib/api'
+import ThemeToggle from './components/ThemeToggle'
 
 type DashboardAccount = {
   id: string
@@ -263,6 +264,16 @@ function ProgressBar({
 }
 
 function App() {
+  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('fintrack_theme') === 'dark')
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkMode)
+    document.documentElement.style.colorScheme = isDarkMode ? 'dark' : 'light'
+    localStorage.setItem('fintrack_theme', isDarkMode ? 'dark' : 'light')
+  }, [isDarkMode])
+
+  const toggleTheme = () => setIsDarkMode((current) => !current)
+
   const [summary, setSummary] =
     useState<DashboardSummary | null>(null)
 
@@ -438,6 +449,8 @@ function App() {
       <>
         {authPage === 'home' && (
           <PublicNavbar
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
             activePage={authPage}
             onHome={() => setAuthPage('home')}
             onLogin={() => setAuthPage('login')}
@@ -447,11 +460,15 @@ function App() {
 
         {authPage === 'register' ? (
           <RegisterPage
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
             onSwitchToLogin={() => setAuthPage('login')}
             onRegisterSuccess={handleAuthSuccess}
           />
         ) : authPage === 'login' ? (
           <LoginPage
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
             onSwitchToRegister={() => setAuthPage('register')}
             onLoginSuccess={handleAuthSuccess}
           />
@@ -524,6 +541,8 @@ function App() {
         currentPage={currentPage}
         onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleTheme}
       >
         <AccountsPage
           onBack={() => setCurrentPage('dashboard')}
@@ -536,7 +555,7 @@ function App() {
   // Halaman Anggaran Bulanan.
   if (currentPage === 'budgets') {
     return (
-      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}>
+      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout} isDarkMode={isDarkMode} onToggleTheme={toggleTheme}>
         <BudgetsPage onDataChanged={refreshDashboard} />
       </DashboardLayout>
     )
@@ -589,6 +608,8 @@ function App() {
       currentPage="dashboard"
       onNavigate={(page: Page) => setCurrentPage(page)}
       onLogout={handleLogout}
+      isDarkMode={isDarkMode}
+      onToggleTheme={toggleTheme}
     >
       <main className="min-w-0 text-slate-900">
         {/* Welcome Dashboard */}
@@ -618,7 +639,7 @@ function App() {
 
         {/* Summary Cards */}
         <section aria-label="Ringkasan keuangan" className="mb-8">
-          <AutoGrid itemCount={4}>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard
             title="Total saldo"
             value={summary.totalBalance}
@@ -650,7 +671,7 @@ function App() {
             symbol="↗"
             symbolClass="bg-blue-50 text-blue-700"
           />
-          </AutoGrid>
+          </div>
         </section>
 
         {/* Account Balances */}
