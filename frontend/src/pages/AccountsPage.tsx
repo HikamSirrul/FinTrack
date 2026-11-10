@@ -351,7 +351,7 @@ export default function AccountsPage({ onDataChanged }: {
               Belum ada akun. Tambahkan akun pertama Anda melalui formulir di atas.
             </p>
           ) : (
-            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-5 dashboard-auto-grid">
               {accounts.map((account) => (
                 <article
                   key={account.id}
