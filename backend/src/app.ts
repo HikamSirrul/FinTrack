@@ -13,9 +13,25 @@ import dashboardRouter from './routes/dashboard.js'
 const app = express()
 
 app.use(helmet())
+const allowedOrigins = [
+  ...(process.env.FRONTEND_URL?.split(',').map((origin) => origin.trim()) ?? []),
+  'http://localhost:5173',
+  'http://localhost:4173',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:4173',
+].filter(Boolean)
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Requests without an Origin header (for example, server-to-server) are allowed.
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+        return
+      }
+
+      callback(new Error('Origin tidak diizinkan oleh kebijakan CORS.'))
+    },
   }),
 )
 app.use(express.json({ limit: '1mb' }))
