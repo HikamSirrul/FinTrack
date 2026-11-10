@@ -1,4 +1,3 @@
-
 import { Router } from 'express'
 import { z } from 'zod'
 import prisma from '../config/prisma.js'
@@ -15,11 +14,20 @@ const savingsGoalSchema = z.object({
   deadline: z.coerce.date().nullable().optional(),
 })
 
+const contributionSchema = z.object({
+  amount: z.number().positive().finite(),
+})
+
 // GET /api/savings-goals
 router.get('/', async (req, res) => {
   try {
     const goals = await prisma.savingsGoal.findMany({
       where: { userId: req.userId! },
+      include: {
+        contributions: {
+          orderBy: { createdAt: 'asc' },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     })
 
@@ -48,11 +56,9 @@ router.post('/', async (req, res) => {
   }
 
   const { name, targetAmount, currentAmount, deadline } = parsed.data
+  const openingAmount = currentAmount ?? 0
 
-  if (
-    currentAmount !== undefined &&
-    currentAmount > targetAmount
-  ) {
+  if (openingAmount > targetAmount) {
     res.status(400).json({
       message: 'Jumlah tabungan terkumpul tidak boleh melebihi target.',
     })
@@ -64,9 +70,15 @@ router.post('/', async (req, res) => {
       data: {
         name,
         targetAmount,
-        currentAmount: currentAmount ?? 0,
+        currentAmount: openingAmount,
         deadline: deadline ?? null,
         userId: req.userId!,
+        ...(openingAmount > 0
+          ? { contributions: { create: { amount: openingAmount } } }
+          : {}),
+      },
+      include: {
+        contributions: { orderBy: { createdAt: 'asc' } },
       },
     })
 
@@ -82,6 +94,71 @@ router.post('/', async (req, res) => {
   }
 })
 
+// POST /api/savings-goals/:id/contributions
+router.post('/:id/contributions', async (req, res) => {
+  const parsed = contributionSchema.safeParse(req.body)
+
+  if (!parsed.success) {
+    res.status(400).json({
+      message: 'Nominal setoran tidak valid.',
+      errors: parsed.error.flatten(),
+    })
+    return
+  }
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const existing = await tx.savingsGoal.findFirst({
+        where: { id: req.params.id, userId: req.userId! },
+      })
+
+      if (!existing) {
+        return { notFound: true as const }
+      }
+
+      const nextAmount = Number(existing.currentAmount) + parsed.data.amount
+
+      if (nextAmount > Number(existing.targetAmount)) {
+        return { exceedsTarget: true as const }
+      }
+
+      const contribution = await tx.savingsContribution.create({
+        data: {
+          goalId: existing.id,
+          amount: parsed.data.amount,
+        },
+      })
+
+      const goal = await tx.savingsGoal.update({
+        where: { id: existing.id },
+        data: { currentAmount: { increment: parsed.data.amount } },
+      })
+
+      return { contribution, goal }
+    })
+
+    if ('notFound' in result) {
+      res.status(404).json({ message: 'Sasaran tabungan tidak ditemukan.' })
+      return
+    }
+
+    if ('exceedsTarget' in result) {
+      res.status(400).json({ message: 'Nominal setoran melebihi sisa target tabungan.' })
+      return
+    }
+
+    res.status(201).json({
+      message: 'Setoran berhasil dicatat.',
+      ...result,
+    })
+  } catch (error) {
+    console.error('Create savings contribution error:', error)
+    res.status(500).json({
+      message: 'Gagal mencatat setoran tabungan.',
+    })
+  }
+})
+
 // GET /api/savings-goals/:id
 router.get('/:id', async (req, res) => {
   try {
@@ -89,6 +166,9 @@ router.get('/:id', async (req, res) => {
       where: {
         id: req.params.id,
         userId: req.userId!,
+      },
+      include: {
+        contributions: { orderBy: { createdAt: 'asc' } },
       },
     })
 
