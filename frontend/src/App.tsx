@@ -1025,7 +1025,7 @@ function App() {
                         <line
                           x1="1"
                           y1="8"
-                          x2={`1 + ${Math.min(100, Math.max(0, Number(goal.percentage) || 0)) * 0.98}`}
+                          x2={1 + Math.min(100, Math.max(0, Number(goal.percentage) || 0)) * 0.98}
                           y2="8"
                           stroke="#86a99f"
                           strokeWidth="2.5"
