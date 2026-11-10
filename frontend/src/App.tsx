@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 import { getDashboardSummary } from './services/dashboard'
 import type { DashboardSummary } from './types/dashboard'
@@ -126,6 +126,40 @@ function StatCard({
         </div>
       </div>
     </Card>
+  )
+}
+
+
+type AutoGridProps = {
+  itemCount: number
+  children: ReactNode
+  className?: string
+}
+
+/**
+ * Menentukan jumlah kolom berdasarkan jumlah item.
+ * Flexbox akan memperlebar item pada baris terakhir agar ruang terisi.
+ */
+function getGridColumns(itemCount: number) {
+  return Math.max(1, Math.ceil(Math.sqrt(itemCount)))
+}
+
+function AutoGrid({
+  itemCount,
+  children,
+  className = '',
+}: AutoGridProps) {
+  return (
+    <div
+      className={`dashboard-auto-grid ${className}`}
+      style={
+        {
+          '--grid-columns': getGridColumns(itemCount),
+        } as CSSProperties
+      }
+    >
+      {children}
+    </div>
   )
 }
 
@@ -583,10 +617,8 @@ function App() {
         </header>
 
         {/* Summary Cards */}
-        <section
-          aria-label="Ringkasan keuangan"
-          className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
-        >
+        <section aria-label="Ringkasan keuangan" className="mb-8">
+          <AutoGrid itemCount={4}>
           <StatCard
             title="Total saldo"
             value={summary.totalBalance}
@@ -618,6 +650,7 @@ function App() {
             symbol="↗"
             symbolClass="bg-blue-50 text-blue-700"
           />
+          </AutoGrid>
         </section>
 
         {/* Account Balances */}
@@ -659,8 +692,8 @@ function App() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {accounts.map((account) => {
+            <AutoGrid itemCount={accounts.length}>
+              {accounts.map((account) => {}
                 const accountTypeLabels: Record<
                   DashboardAccount['type'],
                   string
@@ -720,13 +753,13 @@ function App() {
                   </article>
                 )
               })}
-            </div>
+            </AutoGrid>
           )}
         </section>
 
         {/* Budget and Recent Transactions */}
-        <section className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-5">
-          <Card id="budgets" className="border-0 shadow-md shadow-slate-200/60 xl:col-span-3">
+        <section className="dashboard-two-column-grid mb-8">
+          <Card id="budgets" className="border-0 shadow-md shadow-slate-200/60">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Anggaran bulanan"
@@ -800,7 +833,7 @@ function App() {
             )}
           </Card>
 
-          <Card id="transactions" className="border-0 shadow-md shadow-slate-200/60 xl:col-span-2">
+          <Card id="transactions" className="border-0 shadow-md shadow-slate-200/60">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Transaksi terbaru"
@@ -905,7 +938,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <AutoGrid itemCount={summary.savingsGoals.length}>
                 {summary.savingsGoals.map((goal) => (
                   <div
                     key={goal.id}
@@ -973,7 +1006,7 @@ function App() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </AutoGrid>
             )}
           </Card>
         </section>
