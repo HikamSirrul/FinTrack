@@ -120,7 +120,7 @@ export default function DashboardLayout({
         <button
           type="button"
           onClick={onLogout}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 transition hover:bg-red-600 hover:text-white"
         >
           <span className="w-5 text-center text-lg">↪</span>
           Keluar
