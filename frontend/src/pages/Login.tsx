@@ -2,8 +2,11 @@
 import { useState, type FormEvent } from 'react'
 import axios from 'axios'
 import api from '../lib/api'
+import ThemeToggle from '../components/ThemeToggle'
 
 interface LoginProps {
+  isDarkMode: boolean
+  onToggleTheme: () => void
   onSwitchToRegister: () => void
   onLoginSuccess: () => void
 }
@@ -19,6 +22,8 @@ interface AuthResponse {
 }
 
 export default function Login({
+  isDarkMode,
+  onToggleTheme,
   onSwitchToRegister,
   onLoginSuccess,
 }: LoginProps) {
@@ -65,6 +70,7 @@ export default function Login({
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white px-4 py-12">
+      <ThemeToggle isDarkMode={isDarkMode} onToggleTheme={onToggleTheme} className="fixed right-5 top-5 z-50" />
       {/* Background decoration */}
       <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-emerald-100/70 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-teal-50 blur-3xl" />
