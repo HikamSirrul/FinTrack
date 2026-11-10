@@ -127,5 +127,17 @@ model SavingsGoal {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  contributions SavingsContribution[]
+
   @@index([userId])
+}
+
+model SavingsContribution {
+  id        String      @id @default(cuid())
+  amount    Decimal     @db.Decimal(15, 2)
+  createdAt DateTime    @default(now())
+  goalId    String
+  goal      SavingsGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@index([goalId, createdAt])
 }
