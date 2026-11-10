@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import api from '../lib/api'
 
 type CategoryType = 'INCOME' | 'EXPENSE'
@@ -200,7 +200,7 @@ export default function CategoriesPage({ onDataChanged }: {
           </div>
         )}
 
-        <section className="dashboard-auto-grid">
+        <section className="dashboard-auto-grid" style={{ '--grid-columns': Math.max(1, Math.ceil(Math.sqrt(3))) } as CSSProperties}>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">Total Kategori</p>
             <p className="mt-2 text-3xl font-bold">{categories.length}</p>
@@ -332,7 +332,7 @@ export default function CategoriesPage({ onDataChanged }: {
               Tidak ada kategori untuk filter ini. Tambahkan kategori melalui formulir di atas.
             </p>
           ) : (
-            <div className="mt-5 dashboard-auto-grid">
+            <div className="mt-5 dashboard-auto-grid" style={{ '--grid-columns': Math.max(1, Math.ceil(Math.sqrt(visibleCategories.length))) } as CSSProperties}>
               {visibleCategories.map((category) => (
                 <article
                   key={category.id}
