@@ -543,6 +543,8 @@ function App() {
         onLogout={handleLogout}
         isDarkMode={isDarkMode}
         onToggleTheme={toggleTheme}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleTheme}
       >
         <AccountsPage
           onBack={() => setCurrentPage('dashboard')}
@@ -555,7 +557,9 @@ function App() {
   // Halaman Anggaran Bulanan.
   if (currentPage === 'budgets') {
     return (
-      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout} isDarkMode={isDarkMode} onToggleTheme={toggleTheme}>
+      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleTheme} isDarkMode={isDarkMode} onToggleTheme={toggleTheme}>
         <BudgetsPage onDataChanged={refreshDashboard} />
       </DashboardLayout>
     )
@@ -564,7 +568,9 @@ function App() {
   // Halaman Target Tabungan.
   if (currentPage === 'savings') {
     return (
-      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}>
+      <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleTheme}>
         <SavingsGoalsPage onDataChanged={refreshDashboard} />
       </DashboardLayout>
     )
@@ -577,6 +583,8 @@ function App() {
         currentPage={currentPage}
         onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleTheme}
       >
         <CategoriesPage
           onBack={() => setCurrentPage('dashboard')}
@@ -593,6 +601,8 @@ function App() {
         currentPage={currentPage}
         onNavigate={(page: Page) => setCurrentPage(page)}
         onLogout={handleLogout}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleTheme}
       >
         <TransactionsPage
           onBack={() => setCurrentPage('dashboard')}
@@ -608,6 +618,8 @@ function App() {
       currentPage="dashboard"
       onNavigate={(page: Page) => setCurrentPage(page)}
       onLogout={handleLogout}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleTheme}
       isDarkMode={isDarkMode}
       onToggleTheme={toggleTheme}
     >
