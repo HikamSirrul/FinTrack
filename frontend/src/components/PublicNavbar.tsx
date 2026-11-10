@@ -13,10 +13,6 @@ type PublicNavbarProps = {
 
 type Section = 'home' | 'features' | 'about'
 
-type InstallPromptEvent = Event & {
-  prompt: () => Promise<void>
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
-}
 
 export default function PublicNavbar({
   activePage,
@@ -27,24 +23,6 @@ export default function PublicNavbar({
   onRegister,
 }: PublicNavbarProps) {
   const [activeSection, setActiveSection] = useState<Section>('home')
-  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null)
-
-  useEffect(() => {
-    const handleInstallAvailable = (event: Event) => {
-      event.preventDefault()
-      setInstallPrompt(event as InstallPromptEvent)
-    }
-
-    window.addEventListener('beforeinstallprompt', handleInstallAvailable)
-    return () => window.removeEventListener('beforeinstallprompt', handleInstallAvailable)
-  }, [])
-
-  const handleInstall = async () => {
-    if (!installPrompt) return
-    await installPrompt.prompt()
-    await installPrompt.userChoice
-    setInstallPrompt(null)
-  }
 
   useEffect(() => {
     if (activePage !== 'home') {
@@ -178,17 +156,6 @@ export default function PublicNavbar({
 
         {/* Login dan Register */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {installPrompt && (
-            <button
-              type="button"
-              onClick={handleInstall}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-2.5 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 sm:px-3 sm:text-sm"
-              aria-label="Install aplikasi FinTrack"
-            >
-              <span aria-hidden="true">↓</span>
-              <span className="hidden min-[380px]:inline">Install</span>
-            </button>
-          )}
           <ThemeToggle isDarkMode={isDarkMode} onToggleTheme={onToggleTheme} className="px-2 sm:px-3" />
           <button
             type="button"
