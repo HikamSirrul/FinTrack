@@ -117,6 +117,11 @@ router.get('/summary', async (req, res) => {
       // Sasaran tabungan
       prisma.savingsGoal.findMany({
         where: { userId },
+        include: {
+          contributions: {
+            orderBy: { createdAt: 'asc' },
+          },
+        },
         orderBy: { createdAt: 'desc' },
       }),
     ])
