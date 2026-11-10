@@ -137,7 +137,7 @@ export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: ()
       {error && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{error}</div>}
       {success && <div role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">{success}</div>}
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="dashboard-auto-grid">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Total target</p><p className="mt-2 text-2xl font-bold">{currency(totalTarget)}</p></div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Total terkumpul</p><p className="mt-2 text-2xl font-bold text-emerald-600">{currency(totalSaved)}</p></div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Target tercapai</p><p className="mt-2 text-2xl font-bold">{completed} <span className="text-base font-medium text-slate-400">/ {goals.length}</span></p></div>
@@ -168,7 +168,7 @@ export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: ()
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-lg font-semibold">Daftar target</h2><p className="mt-1 text-sm text-slate-500">Perbarui progres setiap kali kamu menabung.</p></div><span className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">{goals.length} target</span></div>
         {loading ? <p className="py-12 text-center text-sm text-slate-500">Memuat target tabungan...</p> : goals.length === 0 ? <div className="py-12 text-center"><p className="font-semibold text-slate-700">Belum ada target tabungan</p><p className="mt-1 text-sm text-slate-500">Buat target pertamamu melalui formulir di atas.</p></div> : (
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <div className="mt-6 dashboard-auto-grid">
             {goals.map(goal => {
               const target = Number(goal.targetAmount)
               const saved = Number(goal.currentAmount)
