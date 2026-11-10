@@ -693,7 +693,7 @@ function App() {
             </div>
           ) : (
             <AutoGrid itemCount={accounts.length}>
-              {accounts.map((account) => {}
+              {accounts.map((account) => {
                 const accountTypeLabels: Record<
                   DashboardAccount['type'],
                   string
