@@ -70,7 +70,7 @@ button {
    The transaction panel is size-contained and its list scrolls internally. */
 .dashboard-two-column-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
   align-items: stretch;
 }
@@ -86,7 +86,11 @@ button {
   overscroll-behavior: contain;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
+  .dashboard-two-column-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .dashboard-transactions-card {
     height: 100%;
     contain: size;
@@ -98,7 +102,7 @@ button {
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
   .dashboard-account-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
