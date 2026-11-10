@@ -12,3 +12,23 @@ body {
   min-height: 100vh;
   font-family: Inter, system-ui, sans-serif;
 }
+
+/* Grid dashboard adaptif: kolom mengikuti jumlah item dan ruang layar. */
+.dashboard-auto-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard-auto-grid > * {
+  flex: 1 1 calc(100% / var(--grid-columns) - 1rem);
+  min-width: min(100%, 280px);
+}
+
+/* Anggaran dan transaksi menggunakan dua kolom fleksibel tanpa memaksa tinggi sama. */
+.dashboard-two-column-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
