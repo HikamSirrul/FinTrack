@@ -32,3 +32,138 @@ body {
   gap: 1.5rem;
   align-items: start;
 }
+
+
+/* Global dark mode: applies consistently to public, authentication, and dashboard pages. */
+html.dark {
+  color-scheme: dark;
+  background: #0b1220;
+}
+
+html.dark body {
+  background-color: #0b1220;
+  color: #e2e8f0;
+}
+
+html.dark [class~="bg-white"],
+html.dark [class~="bg-white/95"] {
+  background-color: #111c2e !important;
+}
+
+html.dark [class~="bg-slate-50"] {
+  background-color: #0b1220 !important;
+}
+
+html.dark [class~="bg-slate-100"] {
+  background-color: #1e293b !important;
+}
+
+html.dark [class~="bg-slate-200"] {
+  background-color: #334155 !important;
+}
+
+html.dark [class~="text-slate-950"],
+html.dark [class~="text-slate-900"],
+html.dark [class~="text-slate-800"] {
+  color: #f1f5f9 !important;
+}
+
+html.dark [class~="text-slate-700"],
+html.dark [class~="text-slate-600"] {
+  color: #cbd5e1 !important;
+}
+
+html.dark [class~="text-slate-500"] {
+  color: #94a3b8 !important;
+}
+
+html.dark [class~="text-slate-400"] {
+  color: #94a3b8 !important;
+}
+
+html.dark [class~="border-slate-100"],
+html.dark [class~="border-slate-200"],
+html.dark [class~="border-slate-300"] {
+  border-color: #334155 !important;
+}
+
+html.dark [class~="bg-emerald-50"] {
+  background-color: #12372d !important;
+}
+
+html.dark [class~="bg-teal-50"] {
+  background-color: #12343a !important;
+}
+
+html.dark [class~="bg-rose-50"],
+html.dark [class~="bg-red-50"] {
+  background-color: #3b1d2a !important;
+}
+
+html.dark [class~="bg-amber-50"] {
+  background-color: #3b2d16 !important;
+}
+
+html.dark [class~="bg-blue-50"] {
+  background-color: #172f4b !important;
+}
+
+html.dark [class~="text-emerald-700"],
+html.dark [class~="text-emerald-800"] {
+  color: #6ee7b7 !important;
+}
+
+html.dark [class~="text-emerald-600"] {
+  color: #34d399 !important;
+}
+
+html.dark [class~="text-rose-700"],
+html.dark [class~="text-rose-600"],
+html.dark [class~="text-red-700"] {
+  color: #fda4af !important;
+}
+
+html.dark [class~="text-amber-700"] {
+  color: #fcd34d !important;
+}
+
+html.dark [class~="text-blue-700"] {
+  color: #93c5fd !important;
+}
+
+html.dark input:not([type="checkbox"]):not([type="radio"]),
+html.dark select,
+html.dark textarea {
+  background-color: #111c2e !important;
+  color: #f1f5f9 !important;
+  border-color: #475569 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.dark option {
+  background-color: #111c2e;
+  color: #f1f5f9;
+}
+
+html.dark table thead,
+html.dark table tbody tr {
+  border-color: #334155 !important;
+}
+
+html.dark [class~="hover:bg-slate-50"]:hover,
+html.dark [class~="hover:bg-slate-100"]:hover {
+  background-color: #1e293b !important;
+}
+
+html.dark [class~="bg-slate-900/40"] {
+  background-color: rgb(2 6 23 / 65%) !important;
+}
+
+html.dark .dashboard-auto-grid > *,
+html.dark .dashboard-two-column-grid > * {
+  color: #e2e8f0;
+}
