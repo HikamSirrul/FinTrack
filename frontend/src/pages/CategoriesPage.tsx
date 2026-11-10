@@ -200,7 +200,7 @@ export default function CategoriesPage({ onDataChanged }: {
           </div>
         )}
 
-        <section className="grid gap-4 sm:grid-cols-3">
+        <section className="dashboard-auto-grid">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">Total Kategori</p>
             <p className="mt-2 text-3xl font-bold">{categories.length}</p>
@@ -332,7 +332,7 @@ export default function CategoriesPage({ onDataChanged }: {
               Tidak ada kategori untuk filter ini. Tambahkan kategori melalui formulir di atas.
             </p>
           ) : (
-            <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-5 dashboard-auto-grid">
               {visibleCategories.map((category) => (
                 <article
                   key={category.id}
