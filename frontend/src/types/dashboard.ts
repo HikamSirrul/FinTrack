@@ -46,6 +46,11 @@ export interface DashboardSummary {
     remainingAmount: number
     percentage: number
     deadline: string | null
+    contributions: {
+      id: string
+      amount: number | string
+      createdAt: string
+    }[]
   }[]
 }
 
