@@ -465,7 +465,7 @@ export default function TransactionsPage({
           </div>
         )}
 
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className="dashboard-auto-grid">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">
               Total Transaksi
