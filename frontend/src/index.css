@@ -13,36 +13,106 @@ body {
   font-family: Inter, system-ui, sans-serif;
 }
 
-/* Grid dashboard adaptif: kolom mengikuti jumlah item dan ruang layar. */
+/* Global responsive foundation */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+}
+
+/* Cards and form grids adapt to the actual available width. */
 .dashboard-auto-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 1rem;
+  align-items: stretch;
 }
 
 .dashboard-auto-grid > * {
-  flex: 1 1 calc(100% / var(--grid-columns, 3) - 1rem);
-  min-width: min(100%, 280px);
+  width: 100%;
+  min-width: 0;
 }
 
-/* Kartu saldo akun: maksimal empat kolom pada layar lebar. */
+/* Account cards: up to four columns on wide screens. */
 .dashboard-account-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
   gap: 1rem;
+  align-items: stretch;
 }
 
-/* Anggaran dan transaksi direntangkan agar memiliki tinggi yang sama. */
+/* At desktop, the budget card determines the row height.
+   The transaction panel is size-contained and its list scrolls internally. */
 .dashboard-two-column-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
   align-items: stretch;
+}
+
+.dashboard-transactions-card {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dashboard-transactions-card .transactions-scroll {
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-transactions-card {
+    height: 100%;
+    contain: size;
+  }
+
+  .dashboard-transactions-card .transactions-scroll {
+    height: 100%;
+    max-height: 100%;
+  }
 }
 
 @media (max-width: 1023px) {
   .dashboard-account-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-two-column-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-transactions-card {
+    max-height: 28rem;
+  }
+
+  .dashboard-transactions-card .transactions-scroll {
+    max-height: 22rem;
   }
 }
 
@@ -50,8 +120,29 @@ body {
   .dashboard-account-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-}
 
+  .dashboard-auto-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-two-column-grid {
+    gap: 1rem;
+  }
+
+  main {
+    min-width: 0;
+  }
+
+  main h1 {
+    overflow-wrap: anywhere;
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  main section,
+  main article {
+    min-width: 0;
+  }
+}
 
 /* Global dark mode: applies consistently to public, authentication, and dashboard pages. */
 html.dark {
