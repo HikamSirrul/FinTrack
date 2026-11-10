@@ -1,0 +1,120 @@
+type Contribution = {
+  id: string
+  amount: number | string
+  createdAt: string
+}
+
+function currency(value: number) {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+function shortDate(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '-'
+  return new Intl.DateTimeFormat('id-ID', {
+    day: '2-digit',
+    month: 'short',
+  }).format(date)
+}
+
+export default function SavingsContributionChart({
+  contributions,
+}: {
+  contributions: Contribution[]
+}) {
+  const ordered = [...contributions].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  )
+
+  if (ordered.length === 0) {
+    return (
+      <div className="mt-4 rounded-xl bg-slate-50 px-3 py-4 text-center">
+        <p className="text-xs text-slate-500">
+          Grafik akan terbentuk setelah setoran pertama dicatat.
+        </p>
+      </div>
+    )
+  }
+
+  let runningTotal = 0
+  const maxTotal = ordered.reduce(
+    (total, item) => total + Math.max(0, Number(item.amount) || 0),
+    0,
+  )
+  const points = ordered.map((item, index) => {
+    runningTotal += Number(item.amount) || 0
+    const x = ((index + 1) / ordered.length) * 100
+    const y = 76 - (runningTotal / Math.max(maxTotal, 1)) * 58
+    return { ...item, x, y, runningTotal }
+  })
+  const polyline = [{ x: 0, y: 76 }, ...points]
+    .map((point) => `${point.x},${point.y}`)
+    .join(' ')
+  const area = `0,76 ${polyline} 100,76`
+
+  return (
+    <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <p className="text-xs font-semibold text-slate-600">Grafik setoran</p>
+        <p className="text-[10px] text-slate-400">{ordered.length} setoran</p>
+      </div>
+      <svg
+        viewBox="0 0 100 82"
+        preserveAspectRatio="none"
+        className="h-24 w-full overflow-visible"
+        role="img"
+        aria-label="Grafik saldo kumulatif berdasarkan setiap setoran tabungan"
+      >
+        {[18, 47, 76].map((y) => (
+          <line
+            key={y}
+            x1="0"
+            y1={y}
+            x2="100"
+            y2={y}
+            stroke="#e2eae6"
+            strokeWidth="0.8"
+            strokeDasharray="2 2"
+          />
+        ))}
+        <polygon points={area} fill="#8eaa9e" fillOpacity="0.12" />
+        <polyline
+          points={polyline}
+          fill="none"
+          stroke="#78998b"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+        {points.map((point) => (
+          <circle
+            key={point.id}
+            cx={point.x}
+            cy={point.y}
+            r="1.8"
+            fill="#78998b"
+            stroke="#ffffff"
+            strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
+          >
+            <title>
+              {shortDate(point.createdAt)} · Setoran {currency(Number(point.amount))} · Total {currency(point.runningTotal)}
+            </title>
+          </circle>
+        ))}
+      </svg>
+      <div className="mt-1 flex justify-between text-[10px] text-slate-400">
+        <span>{shortDate(ordered[0].createdAt)}</span>
+        <span>{shortDate(ordered[ordered.length - 1].createdAt)}</span>
+      </div>
+      <p className="mt-2 text-[10px] text-slate-400">
+        Garis menunjukkan akumulasi saldo setelah setiap setoran. Arahkan ke titik untuk melihat nominal setoran.
+      </p>
+    </div>
+  )
+}
