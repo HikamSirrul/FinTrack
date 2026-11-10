@@ -543,8 +543,6 @@ function App() {
         onLogout={handleLogout}
         isDarkMode={isDarkMode}
         onToggleTheme={toggleTheme}
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme}
       >
         <AccountsPage
           onBack={() => setCurrentPage('dashboard')}
@@ -559,7 +557,7 @@ function App() {
     return (
       <DashboardLayout currentPage={currentPage} onNavigate={(page: Page) => setCurrentPage(page)} onLogout={handleLogout}
         isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme} isDarkMode={isDarkMode} onToggleTheme={toggleTheme}>
+        onToggleTheme={toggleTheme}>
         <BudgetsPage onDataChanged={refreshDashboard} />
       </DashboardLayout>
     )
@@ -618,8 +616,6 @@ function App() {
       currentPage="dashboard"
       onNavigate={(page: Page) => setCurrentPage(page)}
       onLogout={handleLogout}
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme}
       isDarkMode={isDarkMode}
       onToggleTheme={toggleTheme}
     >
