@@ -41,15 +41,16 @@ export default function SavingsContributionChart({
   }
 
   let runningTotal = 0
-  const maxTotal = ordered.reduce(
-    (total, item) => total + Math.max(0, Number(item.amount) || 0),
-    0,
+  const maxDeposit = Math.max(
+    ...ordered.map((item) => Math.max(0, Number(item.amount) || 0)),
+    1,
   )
   const points = ordered.map((item, index) => {
-    runningTotal += Number(item.amount) || 0
+    const amount = Number(item.amount) || 0
+    runningTotal += amount
     const x = ((index + 1) / ordered.length) * 100
-    const y = 76 - (runningTotal / Math.max(maxTotal, 1)) * 58
-    return { ...item, x, y, runningTotal }
+    const y = 76 - (amount / maxDeposit) * 58
+    return { ...item, x, y, amount, runningTotal }
   })
   const polyline = [{ x: 0, y: 76 }, ...points]
     .map((point) => `${point.x},${point.y}`)
@@ -103,7 +104,7 @@ export default function SavingsContributionChart({
             vectorEffect="non-scaling-stroke"
           >
             <title>
-              {shortDate(point.createdAt)} · Setoran {currency(Number(point.amount))} · Total {currency(point.runningTotal)}
+              {shortDate(point.createdAt)} · Setoran {currency(point.amount)} · Akumulasi {currency(point.runningTotal)}
             </title>
           </circle>
         ))}
@@ -113,7 +114,7 @@ export default function SavingsContributionChart({
         <span>{shortDate(ordered[ordered.length - 1].createdAt)}</span>
       </div>
       <p className="mt-2 text-[10px] text-slate-400">
-        Garis menunjukkan akumulasi saldo setelah setiap setoran. Arahkan ke titik untuk melihat nominal setoran.
+        Garis menunjukkan nominal setiap setoran berdasarkan tanggal. Arahkan ke titik untuk melihat nominal dan akumulasinya.
       </p>
     </div>
   )
