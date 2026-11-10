@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { CSSProperties, FormEvent } from 'react'
 import api from '../lib/api'
+import SavingsContributionChart from '../components/SavingsContributionChart'
 
 type Goal = {
   id: string
@@ -8,6 +9,7 @@ type Goal = {
   targetAmount: number | string
   currentAmount: number | string
   deadline: string | null
+  contributions: { id: string; amount: number | string; createdAt: string }[]
 }
 type GoalForm = { name: string; targetAmount: string; currentAmount: string; deadline: string }
 const emptyForm: GoalForm = { name: '', targetAmount: '', currentAmount: '0', deadline: '' }
@@ -104,7 +106,7 @@ export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: ()
       return
     }
     try {
-      await api.patch(`/savings-goals/${goal.id}`, { currentAmount: nextAmount })
+      await api.post(`/savings-goals/${goal.id}/contributions`, { amount })
       setContribution('')
       setContributionId(null)
       setSuccess(`Setoran ${currency(amount)} berhasil ditambahkan ke ${goal.name}.`)
@@ -178,6 +180,7 @@ export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: ()
               return <article key={goal.id} className="rounded-xl border border-slate-200 p-5">
                 <div className="flex items-start justify-between gap-3"><div><h3 className="font-semibold">{goal.name}</h3><p className="mt-1 text-xs text-slate-500">{goal.deadline ? `Target ${new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date(goal.deadline))}` : 'Tanpa batas waktu'}</p></div><span className={`rounded-lg px-2 py-1 text-xs font-semibold ${reached ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>{reached ? 'Tercapai' : `${percent}%`}</span></div>
                 <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${percent}%` }} /></div>
+                <SavingsContributionChart contributions={goal.contributions ?? []} />
                 <div className="mt-3 flex justify-between gap-3 text-sm"><span className="text-slate-500">Terkumpul <strong className="text-slate-800">{currency(saved)}</strong></span><span className="text-slate-500">Target <strong className="text-slate-800">{currency(target)}</strong></span></div>
                 <p className="mt-2 text-xs font-medium text-slate-500">{reached ? 'Selamat! Target tabungan tercapai.' : `Kurang ${currency(remaining)} lagi`}</p>
                 {contributionId === goal.id && <div className="mt-4 flex gap-2"><input type="number" min="1" max={remaining} step="1" value={contribution} onChange={e => setContribution(e.target.value)} placeholder="Nominal setoran" className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm" /><button type="button" onClick={() => void handleContribution(goal)} className="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white">Simpan</button></div>}
