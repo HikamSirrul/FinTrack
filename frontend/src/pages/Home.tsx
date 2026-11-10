@@ -25,14 +25,14 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
 
 export default function HomePage({ onRegister }: HomePageProps) {
   return (
-    <div className="min-h-screen overflow-hidden bg-white text-slate-800">
+    <div className="home-page min-h-screen overflow-hidden bg-white text-slate-800">
      
 
       <main>
         {/* Hero */}
         <section id="home" className="relative isolate">
-          <div className="pointer-events-none absolute -right-40 -top-32 -z-10 h-96 w-96 rounded-full bg-emerald-100/70 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-20 -left-40 -z-10 h-96 w-96 rounded-full bg-teal-50 blur-3xl" />
+          <div className="home-glow pointer-events-none absolute -right-40 -top-32 -z-10 h-96 w-96 rounded-full bg-emerald-100/70 blur-3xl" />
+          <div className="home-glow pointer-events-none absolute -bottom-20 -left-40 -z-10 h-96 w-96 rounded-full bg-teal-50 blur-3xl" />
 
           <div className="mx-auto grid max-w-7xl items-center gap-14 px-5 py-20 sm:px-8 lg:grid-cols-2 lg:gap-16 lg:py-28">
             <div>
@@ -76,7 +76,7 @@ export default function HomePage({ onRegister }: HomePageProps) {
 
             {/* Finance dashboard illustration */}
             <div className="relative mx-auto w-full max-w-xl">
-              <div className="absolute -inset-5 rounded-[2rem] bg-gradient-to-br from-emerald-100 via-teal-50 to-white blur-xl" />
+              <div className="home-visual-glow absolute -inset-5 rounded-[2rem] bg-gradient-to-br from-emerald-100 via-teal-50 to-white blur-xl" />
               <div className="relative rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-900/10 sm:p-7">
                 <div className="flex items-center justify-between">
                   <div>
