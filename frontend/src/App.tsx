@@ -873,7 +873,7 @@ function App() {
             )}
           </Card>
 
-          <Card id="transactions" className="flex h-full flex-col border-0 shadow-md shadow-slate-200/60">
+          <Card id="transactions" className="flex h-full min-h-0 flex-col border-0 shadow-md shadow-slate-200/60">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Transaksi terbaru"
@@ -967,42 +967,6 @@ function App() {
               </span>
             </div>
 
-            {summary.savingsGoals.length > 0 && (
-              <div className="mb-7 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 sm:p-5">
-                <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-800">Grafik progres tabungan</h3>
-                    <p className="mt-1 text-xs text-slate-500">Perbandingan dana terkumpul terhadap target setiap sasaran</p>
-                  </div>
-                  <span className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">Progres (%)</span>
-                </div>
-                <div className="flex h-44 items-end gap-3 overflow-x-auto pb-1">
-                  {summary.savingsGoals.map((goal) => {
-                    const progress = Number.isFinite(goal.percentage)
-                      ? Math.min(100, Math.max(0, goal.percentage))
-                      : 0
-                    return (
-                      <div key={goal.id} className="flex h-full min-w-[76px] flex-1 flex-col items-center justify-end gap-2">
-                        <span className="text-xs font-semibold text-emerald-700">{Math.round(progress)}%</span>
-                        <div className="flex h-28 w-full max-w-16 items-end overflow-hidden rounded-t-xl bg-slate-200">
-                          <div
-                            className="w-full rounded-t-xl bg-gradient-to-t from-emerald-600 to-teal-400 transition-all duration-500"
-                            style={{ height: `${progress}%` }}
-                            title={`${goal.name}: ${Math.round(progress)}%`}
-                          />
-                        </div>
-                        <span className="w-full truncate text-center text-xs font-medium text-slate-600" title={goal.name}>{goal.name}</span>
-                      </div>
-                    )
-                  })}
-                </div>
-                <div className="mt-3 flex items-center justify-center gap-2 text-xs text-slate-500">
-                  <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
-                  Dana terkumpul dibandingkan target
-                </div>
-              </div>
-            )}
-
             {summary.savingsGoals.length === 0 ? (
               <div className="rounded-xl border border-dashed border-slate-200 px-4 py-10 text-center">
                 <p className="font-medium text-slate-700">
@@ -1048,6 +1012,39 @@ function App() {
                       percentage={goal.percentage}
                       color="#059669"
                     />
+
+                    {/* Grafik garis ringkas: posisi dana terkumpul terhadap target 0–100%. */}
+                    <div className="mt-3" aria-label={`Visualisasi progres ${goal.name}`}>
+                      <svg
+                        viewBox="0 0 100 18"
+                        className="h-5 w-full overflow-visible"
+                        role="img"
+                        aria-label={`Progres ${goal.percentage.toFixed(0)} persen dari target`}
+                      >
+                        <line x1="1" y1="8" x2="99" y2="8" stroke="#d6e2df" strokeWidth="2" strokeLinecap="round" />
+                        <line
+                          x1="1"
+                          y1="8"
+                          x2={`1 + ${Math.min(100, Math.max(0, Number(goal.percentage) || 0)) * 0.98}`}
+                          y2="8"
+                          stroke="#86a99f"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                        />
+                        <circle
+                          cx={1 + Math.min(100, Math.max(0, Number(goal.percentage) || 0)) * 0.98}
+                          cy="8"
+                          r="3.5"
+                          fill="#6f968b"
+                          stroke="#ffffff"
+                          strokeWidth="1.5"
+                        />
+                      </svg>
+                      <div className="flex justify-between text-[10px] text-slate-400">
+                        <span>0%</span>
+                        <span>Target 100%</span>
+                      </div>
+                    </div>
 
                     <div className="mt-4 flex items-start justify-between gap-3">
                       <div>
