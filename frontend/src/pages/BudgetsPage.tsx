@@ -140,7 +140,7 @@ export default function BudgetsPage({ onDataChanged }: { onDataChanged?: () => P
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-lg font-semibold">{editingId ? 'Edit anggaran' : 'Buat anggaran baru'}</h2>
-        <form onSubmit={handleSubmit} className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <form onSubmit={handleSubmit} className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <label className="text-sm font-medium text-slate-700">Kategori pengeluaran
             <select required value={form.categoryId} onChange={e => setForm({ ...form, categoryId: e.target.value })} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
               <option value="">Pilih kategori</option>{categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -155,7 +155,7 @@ export default function BudgetsPage({ onDataChanged }: { onDataChanged?: () => P
           <label className="text-sm font-medium text-slate-700">Tahun
             <input required type="number" min="2000" max="2100" value={form.year} onChange={e => setForm({ ...form, year: Number(e.target.value) })} className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-3 outline-none focus:border-emerald-500" />
           </label>
-          <div className="flex flex-wrap gap-2 sm:col-span-2 lg:col-span-4">
+          <div className="flex flex-wrap gap-2 sm:col-span-2 xl:col-span-4">
             <button disabled={saving || categories.length === 0} className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50">{saving ? 'Menyimpan...' : editingId ? 'Simpan perubahan' : 'Tambah anggaran'}</button>
             {editingId && <button type="button" onClick={resetForm} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50">Batal</button>}
           </div>
