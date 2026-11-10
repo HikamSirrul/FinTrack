@@ -7,6 +7,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true,
+        type: 'module',
+      },
       includeAssets: ['fintrack-icon.svg'],
       manifest: {
         id: '/',
@@ -33,6 +37,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
         navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/api\//],
         cleanupOutdatedCaches: true,
       },
     }),
