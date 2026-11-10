@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import api from '../lib/api'
 
 type Category = { id: string; name: string; color: string; type: 'INCOME' | 'EXPENSE' }
@@ -132,7 +132,7 @@ export default function BudgetsPage({ onDataChanged }: { onDataChanged?: () => P
       {error && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{error}</div>}
       {success && <div role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">{success}</div>}
 
-      <section className="dashboard-auto-grid">
+      <section className="dashboard-auto-grid" style={{ '--grid-columns': Math.max(1, Math.ceil(Math.sqrt(3))) } as CSSProperties}>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Total anggaran</p><p className="mt-2 text-2xl font-bold">{currency(totalBudget)}</p></div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Total terpakai</p><p className="mt-2 text-2xl font-bold text-rose-600">{currency(totalSpent)}</p></div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm text-slate-500">Sisa anggaran</p><p className={`mt-2 text-2xl font-bold ${totalBudget - totalSpent < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{currency(totalBudget - totalSpent)}</p></div>
@@ -172,7 +172,7 @@ export default function BudgetsPage({ onDataChanged }: { onDataChanged?: () => P
           </div>
         </div>
         {loading ? <p className="py-12 text-center text-sm text-slate-500">Memuat anggaran...</p> : budgets.length === 0 ? <div className="py-12 text-center"><p className="font-semibold text-slate-700">Belum ada anggaran untuk periode ini</p><p className="mt-1 text-sm text-slate-500">Tambahkan anggaran menggunakan formulir di atas.</p></div> : (
-          <div className="mt-6 dashboard-auto-grid">
+          <div className="mt-6 dashboard-auto-grid" style={{ '--grid-columns': Math.max(1, Math.ceil(Math.sqrt(budgets.length))) } as CSSProperties}>
             {budgets.map(item => {
               const spent = spentByCategory[item.categoryId] ?? 0
               const percentage = Number(item.amount) > 0 ? Math.round(spent / Number(item.amount) * 100) : 0
