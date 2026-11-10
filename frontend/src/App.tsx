@@ -144,6 +144,11 @@ function getGridColumns(itemCount: number) {
   return Math.max(1, Math.ceil(Math.sqrt(itemCount)))
 }
 
+function getAccountGridColumns(itemCount: number) {
+  if (itemCount <= 4) return Math.max(1, itemCount)
+  return Math.min(4, Math.ceil(itemCount / 2))
+}
+
 function AutoGrid({
   itemCount,
   children,
@@ -720,7 +725,14 @@ function App() {
               </button>
             </div>
           ) : (
-            <AutoGrid itemCount={accounts.length}>
+            <div
+              className="dashboard-account-grid"
+              style={
+                {
+                  '--grid-columns': getAccountGridColumns(accounts.length),
+                } as CSSProperties
+              }
+            >
               {accounts.map((account) => {
                 const accountTypeLabels: Record<
                   DashboardAccount['type'],
@@ -781,13 +793,13 @@ function App() {
                   </article>
                 )
               })}
-            </AutoGrid>
+            </div>
           )}
         </section>
 
         {/* Budget and Recent Transactions */}
         <section className="dashboard-two-column-grid mb-8">
-          <Card id="budgets" className="border-0 shadow-md shadow-slate-200/60">
+          <Card id="budgets" className="flex h-full flex-col border-0 shadow-md shadow-slate-200/60">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Anggaran bulanan"
@@ -861,7 +873,7 @@ function App() {
             )}
           </Card>
 
-          <Card id="transactions" className="border-0 shadow-md shadow-slate-200/60">
+          <Card id="transactions" className="flex h-full flex-col border-0 shadow-md shadow-slate-200/60">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Transaksi terbaru"
@@ -880,7 +892,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div className="max-h-[240px] space-y-4 overflow-y-auto overscroll-contain pr-2 [scrollbar-color:#cbd5e1_transparent] [scrollbar-width:thin]">
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain pr-2 [scrollbar-color:#cbd5e1_transparent] [scrollbar-width:thin]">
                 {summary.recentTransactions.map((transaction) => (
                   <div
                     key={transaction.id}
@@ -954,6 +966,42 @@ function App() {
                 {summary.savingsGoals.length} sasaran
               </span>
             </div>
+
+            {summary.savingsGoals.length > 0 && (
+              <div className="mb-7 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 sm:p-5">
+                <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-800">Grafik progres tabungan</h3>
+                    <p className="mt-1 text-xs text-slate-500">Perbandingan dana terkumpul terhadap target setiap sasaran</p>
+                  </div>
+                  <span className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">Progres (%)</span>
+                </div>
+                <div className="flex h-44 items-end gap-3 overflow-x-auto pb-1">
+                  {summary.savingsGoals.map((goal) => {
+                    const progress = Number.isFinite(goal.percentage)
+                      ? Math.min(100, Math.max(0, goal.percentage))
+                      : 0
+                    return (
+                      <div key={goal.id} className="flex h-full min-w-[76px] flex-1 flex-col items-center justify-end gap-2">
+                        <span className="text-xs font-semibold text-emerald-700">{Math.round(progress)}%</span>
+                        <div className="flex h-28 w-full max-w-16 items-end overflow-hidden rounded-t-xl bg-slate-200">
+                          <div
+                            className="w-full rounded-t-xl bg-gradient-to-t from-emerald-600 to-teal-400 transition-all duration-500"
+                            style={{ height: `${progress}%` }}
+                            title={`${goal.name}: ${Math.round(progress)}%`}
+                          />
+                        </div>
+                        <span className="w-full truncate text-center text-xs font-medium text-slate-600" title={goal.name}>{goal.name}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+                <div className="mt-3 flex items-center justify-center gap-2 text-xs text-slate-500">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
+                  Dana terkumpul dibandingkan target
+                </div>
+              </div>
+            )}
 
             {summary.savingsGoals.length === 0 ? (
               <div className="rounded-xl border border-dashed border-slate-200 px-4 py-10 text-center">
