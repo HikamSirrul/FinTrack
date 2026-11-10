@@ -48,14 +48,14 @@ export default function SavingsContributionChart({
   const points = ordered.map((item, index) => {
     const amount = Number(item.amount) || 0
     runningTotal += amount
-    const x = ((index + 1) / ordered.length) * 100
+    const x = ordered.length === 1 ? 50 : (index / (ordered.length - 1)) * 100
     const y = 76 - (amount / maxDeposit) * 58
     return { ...item, x, y, amount, runningTotal }
   })
-  const polyline = [{ x: 0, y: 76 }, ...points]
+  const polyline = points
     .map((point) => `${point.x},${point.y}`)
     .join(' ')
-  const area = `0,76 ${polyline} 100,76`
+  const area = `${points[0].x},76 ${polyline} ${points[points.length - 1].x},76`
 
   return (
     <div className="savings-contribution-chart mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
