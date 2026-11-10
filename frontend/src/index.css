@@ -21,7 +21,7 @@ body {
 }
 
 .dashboard-auto-grid > * {
-  flex: 1 1 calc(100% / var(--grid-columns) - 1rem);
+  flex: 1 1 calc(100% / var(--grid-columns, 3) - 1rem);
   min-width: min(100%, 280px);
 }
 
