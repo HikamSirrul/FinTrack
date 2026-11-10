@@ -153,7 +153,7 @@ export default function PublicNavbar({
 
         {/* Login dan Register */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <ThemeToggle isDarkMode={isDarkMode} onToggleTheme={onToggleTheme} className="hidden sm:inline-flex" />
+          <ThemeToggle isDarkMode={isDarkMode} onToggleTheme={onToggleTheme} className="px-2 sm:px-3" />
           <button
             type="button"
             onClick={onLogin}
