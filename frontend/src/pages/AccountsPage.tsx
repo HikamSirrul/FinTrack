@@ -312,7 +312,7 @@ export default function AccountsPage({ onDataChanged }: {
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+                className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
               >
                 {saving
                   ? 'Menyimpan...'
@@ -364,7 +364,7 @@ export default function AccountsPage({ onDataChanged }: {
                         {accountTypeLabels[account.type] ?? account.type}
                       </p>
                     </div>
-                    <span className="rounded-lg bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-700">
+                    <span className="rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">
                       {account.type}
                     </span>
                   </div>
