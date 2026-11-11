@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 type Contribution = {
   id: string
   amount: number | string
@@ -26,6 +28,8 @@ export default function SavingsContributionChart({
 }: {
   contributions: Contribution[]
 }) {
+  const [selectedPointId, setSelectedPointId] = useState<string | null>(null)
+
   const ordered = [...contributions].sort(
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   )
@@ -56,6 +60,7 @@ export default function SavingsContributionChart({
     .map((point) => `${point.x},${point.y}`)
     .join(' ')
   const area = `${points[0].x},76 ${polyline} ${points[points.length - 1].x},76`
+  const selectedPoint = points.find((point) => point.id === selectedPointId)
 
   return (
     <div className="savings-contribution-chart mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
@@ -93,29 +98,61 @@ export default function SavingsContributionChart({
           vectorEffect="non-scaling-stroke"
         />
         {points.map((point) => (
-          <circle
-            key={point.id}
-            cx={point.x}
-            cy={point.y}
-            r="1.8"
-            fill="#78998b"
-            stroke="#ffffff"
-            strokeWidth="1"
-            vectorEffect="non-scaling-stroke"
-          >
+          <g key={point.id}>
+            <circle
+              cx={point.x}
+              cy={point.y}
+              r="5"
+              fill="transparent"
+              className="cursor-pointer"
+              role="button"
+              tabIndex={0}
+              aria-label={`Lihat setoran ${currency(point.amount)} tanggal ${shortDate(point.createdAt)}`}
+              aria-pressed={selectedPointId === point.id}
+              onClick={() => setSelectedPointId(point.id)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  setSelectedPointId(point.id)
+                }
+              }}
+            />
+            <circle
+              cx={point.x}
+              cy={point.y}
+              r={selectedPointId === point.id ? '2.7' : '1.8'}
+              fill={selectedPointId === point.id ? '#047857' : '#78998b'}
+              stroke="#ffffff"
+              strokeWidth="1"
+              vectorEffect="non-scaling-stroke"
+              pointerEvents="none"
+            />
             <title>
               {shortDate(point.createdAt)} · Setoran {currency(point.amount)} · Akumulasi {currency(point.runningTotal)}
             </title>
-          </circle>
+          </g>
         ))}
       </svg>
       <div className="mt-1 flex justify-between text-[10px] text-slate-400">
         <span>{shortDate(ordered[0].createdAt)}</span>
         <span>{shortDate(ordered[ordered.length - 1].createdAt)}</span>
       </div>
-      <p className="mt-2 text-[10px] text-slate-400">
-        Garis menunjukkan nominal setiap setoran berdasarkan tanggal. Arahkan ke titik untuk melihat nominal dan akumulasinya.
-      </p>
+      {selectedPoint && (
+        <div className="mt-3 rounded-lg border border-emerald-100 bg-white px-3 py-2.5 text-xs shadow-sm">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <p className="font-semibold text-slate-700">Detail setoran</p>
+            <p className="text-[10px] text-slate-400">{shortDate(selectedPoint.createdAt)}</p>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-500">Nominal setoran</span>
+            <span className="font-semibold text-emerald-700">{currency(selectedPoint.amount)}</span>
+          </div>
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <span className="text-slate-500">Total akumulasi</span>
+            <span className="font-semibold text-slate-700">{currency(selectedPoint.runningTotal)}</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
