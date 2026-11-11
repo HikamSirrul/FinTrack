@@ -58,26 +58,23 @@ button {
   min-width: 0;
 }
 
-/* Savings goal cards grow to fill each row, including an incomplete final row. */
-.savings-goals-grid {
+/* Dashboard accounts and savings goals use evenly distributed rows,
+   with no more than four cards per row. */
+.balanced-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1rem;
-  align-items: stretch;
 }
 
-.savings-goals-grid > article {
-  flex: 1 1 280px;
-  min-width: min(100%, 280px);
-  max-width: 100%;
-}
-
-/* Account cards: up to four columns on wide screens. */
-.dashboard-account-grid {
+.balanced-grid-row {
   display: grid;
-  grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
+  grid-template-columns: repeat(var(--row-items), minmax(0, 1fr));
   gap: 1rem;
   align-items: stretch;
+}
+
+.balanced-grid-item {
+  min-width: 0;
 }
 
 /* At desktop, the budget card determines the row height.
@@ -117,8 +114,13 @@ button {
 }
 
 @media (max-width: 1279px) {
-  .dashboard-account-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .balanced-grid-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .balanced-grid-item {
+    flex: 1 1 calc(50% - 0.5rem);
   }
 
   .dashboard-two-column-grid {
@@ -135,8 +137,8 @@ button {
 }
 
 @media (max-width: 639px) {
-  .dashboard-account-grid {
-    grid-template-columns: minmax(0, 1fr);
+  .balanced-grid-item {
+    flex-basis: 100%;
   }
 
   .dashboard-auto-grid {
@@ -292,7 +294,7 @@ html.dark [class~="bg-slate-900/40"] {
 }
 
 html.dark .dashboard-auto-grid > *,
-html.dark .dashboard-account-grid > *,
+html.dark .balanced-grid > *,
 html.dark .dashboard-two-column-grid > * {
   color: #e2e8f0;
 }
