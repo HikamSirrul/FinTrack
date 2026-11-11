@@ -102,9 +102,10 @@ export default function SavingsContributionChart({
             <circle
               cx={point.x}
               cy={point.y}
-              r="5"
-              fill="transparent"
-              className="cursor-pointer"
+              r={selectedPointId === point.id ? '3.2' : '1.8'}
+              fill={selectedPointId === point.id ? '#047857' : '#78998b'}
+              className="cursor-pointer outline-none focus:outline-none focus-visible:outline-none"
+              style={{ outline: 'none' }}
               role="button"
               tabIndex={0}
               aria-label={`Lihat setoran ${currency(point.amount)} tanggal ${shortDate(point.createdAt)}`}
@@ -116,14 +117,7 @@ export default function SavingsContributionChart({
                   setSelectedPointId(point.id)
                 }
               }}
-            />
-            <circle
-              cx={point.x}
-              cy={point.y}
-              r={selectedPointId === point.id ? '3.2' : '1.8'}
-              fill={selectedPointId === point.id ? '#047857' : '#78998b'}
               vectorEffect="non-scaling-stroke"
-              pointerEvents="none"
             />
             <title>
               {shortDate(point.createdAt)} · Setoran {currency(point.amount)} · Akumulasi {currency(point.runningTotal)}
