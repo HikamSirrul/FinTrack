@@ -106,8 +106,8 @@ export default function PublicNavbar({
             alt="FinTrack"
             className="h-10 w-10 rounded-xl transition-transform duration-200 group-hover:scale-105"
           />
-          <span className="whitespace-nowrap text-lg font-bold tracking-tight text-slate-900 transition-colors group-hover:text-emerald-700 sm:text-xl">
-            Fin<span className="text-emerald-600">Track</span>
+          <span className="whitespace-nowrap text-lg font-bold tracking-tight transition-colors sm:text-xl">
+            <span className="text-emerald-600">Fin</span><span className="text-slate-900 group-hover:text-emerald-700">Track</span>
           </span>
         </button>
 
