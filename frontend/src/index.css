@@ -58,6 +58,20 @@ button {
   min-width: 0;
 }
 
+/* Savings goal cards grow to fill each row, including an incomplete final row. */
+.savings-goals-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.savings-goals-grid > article {
+  flex: 1 1 280px;
+  min-width: min(100%, 280px);
+  max-width: 100%;
+}
+
 /* Account cards: up to four columns on wide screens. */
 .dashboard-account-grid {
   display: grid;
