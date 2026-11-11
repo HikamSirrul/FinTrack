@@ -12,20 +12,29 @@ import dashboardRouter from './routes/dashboard.js'
 
 const app = express()
 
+// Keep local Node.js development compatible while allowing the Worker entry
+// point to inject Cloudflare bindings through app.locals.
+app.locals.FRONTEND_URL = process.env.FRONTEND_URL ?? ''
+app.locals.JWT_SECRET = process.env.JWT_SECRET
+
 app.use(helmet())
-const allowedOrigins = [
-  ...(process.env.FRONTEND_URL?.split(',').map((origin) => origin.trim()) ?? []),
+
+const getAllowedOrigins = () => [
+  ...(String(app.locals.FRONTEND_URL ?? process.env.FRONTEND_URL ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)),
   'http://localhost:5173',
   'http://localhost:4173',
   'http://127.0.0.1:5173',
   'http://127.0.0.1:4173',
-].filter(Boolean)
+]
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Requests without an Origin header (for example, server-to-server) are allowed.
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || getAllowedOrigins().includes(origin)) {
         callback(null, true)
         return
       }
