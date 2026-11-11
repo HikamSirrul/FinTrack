@@ -3,8 +3,17 @@
   "name": "fintrack-api",
   "main": "src/worker.ts",
   "compatibility_date": "2026-11-11",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "workers_dev": true,
   "observability": {
     "enabled": true
-  }
+  },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "4bd8b6072cb840cbb9d48f2ca25c89ac"
+    }
+  ]
 }
