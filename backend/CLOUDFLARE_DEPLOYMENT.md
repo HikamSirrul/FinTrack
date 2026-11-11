@@ -5,11 +5,12 @@ This deployment keeps the existing Express routes, Prisma data model, and Supaba
 ## Cloudflare resources
 
 1. Create a Hyperdrive configuration connected to the existing Supabase PostgreSQL database.
-2. Copy the Hyperdrive ID into `wrangler.jsonc`, replacing `REPLACE_WITH_HYPERDRIVE_ID`.
-3. In the Worker settings, add:
+2. Disable Hyperdrive query caching for this configuration. FinTrack serves personal financial records and requires fresh balances and read-after-write consistency.
+3. Copy the Hyperdrive ID into `wrangler.jsonc`, replacing `REPLACE_WITH_HYPERDRIVE_ID`.
+4. In the Worker settings, add:
    - Secret: `JWT_SECRET` (use the same value as the existing backend so current JWT sessions remain valid).
    - Variable: `FRONTEND_URL` (the exact Cloudflare Pages origin, including `https://`; no trailing slash).
-4. Do not put database credentials or JWT secrets in Git.
+5. Do not put database credentials or JWT secrets in Git.
 
 ## Supabase connection
 
@@ -39,6 +40,14 @@ The existing Node.js development command remains available:
 ```bash
 npm run dev
 ```
+
+## Connect the Cloudflare Pages frontend
+
+After the Worker is deployed, copy its `workers.dev` URL and set the following variable in the Cloudflare Pages project:
+
+- `VITE_API_URL`: `https://YOUR-WORKER-URL/api`
+
+Trigger a new Pages deployment so the frontend build picks up the new API URL.
 
 ## Verify
 
