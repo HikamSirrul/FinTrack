@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { getDashboardSummary } from './services/dashboard'
 import type { DashboardSummary } from './types/dashboard'
@@ -132,39 +132,6 @@ function StatCard({
 }
 
 
-type AutoGridProps = {
-  itemCount: number
-  children: ReactNode
-  className?: string
-}
-
-/**
- * Menentukan jumlah kolom berdasarkan jumlah item.
- * Flexbox akan memperlebar item pada baris terakhir agar ruang terisi.
- */
-function getGridColumns(itemCount: number) {
-  return Math.max(1, Math.ceil(Math.sqrt(itemCount)))
-}
-
-
-function AutoGrid({
-  itemCount,
-  children,
-  className = '',
-}: AutoGridProps) {
-  return (
-    <div
-      className={`dashboard-auto-grid ${className}`}
-      style={
-        {
-          '--grid-columns': getGridColumns(itemCount),
-        } as CSSProperties
-      }
-    >
-      {children}
-    </div>
-  )
-}
 
 function formatCurrency(value: number | string) {
   const amount = Number(value)
@@ -969,7 +936,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              <AutoGrid itemCount={summary.savingsGoals.length}>
+              <BalancedGrid className="dashboard-savings-goals-grid">
                 {summary.savingsGoals.map((goal) => (
                   <div
                     key={goal.id}
@@ -1039,7 +1006,7 @@ function App() {
                     </div>
                   </div>
                 ))}
-              </AutoGrid>
+              </BalancedGrid>
             )}
           </Card>
         </section>
