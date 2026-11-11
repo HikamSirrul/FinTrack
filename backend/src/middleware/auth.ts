@@ -1,4 +1,3 @@
-
 import type { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
@@ -28,9 +27,9 @@ export function authenticate(
     return
   }
 
-  const secret = process.env.JWT_SECRET
+  const secret = req.app.locals.JWT_SECRET ?? process.env.JWT_SECRET
 
-  if (!secret) {
+  if (!secret || typeof secret !== 'string') {
     res.status(500).json({
       message: 'Konfigurasi autentikasi bermasalah.',
     })
