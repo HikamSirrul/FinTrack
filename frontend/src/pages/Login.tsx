@@ -78,9 +78,11 @@ export default function Login({
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
           <div className="mb-6 flex items-center justify-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl font-bold text-white shadow-sm">
-              F
-            </div>
+            <img
+              src="/fintrack-icon.svg"
+              alt="FinTrack"
+              className="h-10 w-10 rounded-xl shadow-sm"
+            />
 
             <span className="text-2xl font-bold tracking-tight">
               <span className="text-emerald-600">Fin</span>
