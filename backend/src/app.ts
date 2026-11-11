@@ -12,8 +12,10 @@ import dashboardRouter from './routes/dashboard.js'
 
 const app = express()
 
-app.use(helmet())
+// Keep the production Pages origin explicitly allowed. FRONTEND_URL remains
+// configurable for local development and any future production domain.
 const allowedOrigins = [
+  'https://fintrack-9ej.pages.dev',
   ...(process.env.FRONTEND_URL?.split(',').map((origin) => origin.trim()) ?? []),
   'http://localhost:5173',
   'http://localhost:4173',
@@ -25,15 +27,16 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Requests without an Origin header (for example, server-to-server) are allowed.
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true)
-        return
-      }
-
-      callback(new Error('Origin tidak diizinkan oleh kebijakan CORS.'))
+      // Reject unknown browser origins without throwing an Express 500 error.
+      callback(null, !origin || allowedOrigins.includes(origin))
     },
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 204,
   }),
 )
+
+app.use(helmet())
 app.use(express.json({ limit: '1mb' }))
 app.use('/api/transactions', transactionsRouter)
 app.use('/api/auth', authRouter)
