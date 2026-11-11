@@ -101,9 +101,11 @@ export default function PublicNavbar({
           }}
           className="group flex items-center gap-2.5 rounded-xl"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl font-bold text-white transition-all duration-200 group-hover:scale-105 group-hover:bg-emerald-700">
-            F
-          </span>
+          <img
+            src="/fintrack-icon.svg"
+            alt="FinTrack"
+            className="h-10 w-10 rounded-xl transition-transform duration-200 group-hover:scale-105"
+          />
           <span className="whitespace-nowrap text-lg font-bold tracking-tight text-slate-900 transition-colors group-hover:text-emerald-700 sm:text-xl">
             Fin<span className="text-emerald-600">Track</span>
           </span>
