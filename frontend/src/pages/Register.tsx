@@ -95,10 +95,6 @@ export default function Register({
               className="h-10 w-10 rounded-xl shadow-sm"
             />
 
-            <span className="text-2xl font-bold tracking-tight">
-              <span className="text-emerald-600">Fin</span>
-              <span className="text-slate-900">Track</span>
-            </span>
           </div>
         {/* Register Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5 sm:p-9">
