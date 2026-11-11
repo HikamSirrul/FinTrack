@@ -84,10 +84,6 @@ export default function Login({
               className="h-10 w-10 rounded-xl shadow-sm"
             />
 
-            <span className="text-2xl font-bold tracking-tight">
-              <span className="text-emerald-600">Fin</span>
-              <span className="text-slate-900">Track</span>
-            </span>
           </div>
 
         {/* Login Card */}
