@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { CSSProperties, FormEvent } from 'react'
 import api from '../lib/api'
 import SavingsContributionChart from '../components/SavingsContributionChart'
+import BalancedGrid from '../components/BalancedGrid'
 
 type Goal = {
   id: string
@@ -170,7 +171,7 @@ export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: ()
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-lg font-semibold">Daftar target</h2><p className="mt-1 text-sm text-slate-500">Perbarui progres setiap kali kamu menabung.</p></div><span className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">{goals.length} target</span></div>
         {loading ? <p className="py-12 text-center text-sm text-slate-500">Memuat target tabungan...</p> : goals.length === 0 ? <div className="py-12 text-center"><p className="font-semibold text-slate-700">Belum ada target tabungan</p><p className="mt-1 text-sm text-slate-500">Buat target pertamamu melalui formulir di atas.</p></div> : (
-          <div className="mt-6 savings-goals-grid">
+          <BalancedGrid className="mt-6 savings-goals-grid">
             {goals.map(goal => {
               const target = Number(goal.targetAmount)
               const saved = Number(goal.currentAmount)
@@ -191,7 +192,7 @@ export default function SavingsGoalsPage({ onDataChanged }: { onDataChanged?: ()
                 </div>
               </article>
             })}
-          </div>
+          </BalancedGrid>
         )}
       </section>
     </main>
