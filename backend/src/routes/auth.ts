@@ -1,4 +1,3 @@
-
 import { Router } from 'express'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
@@ -19,13 +18,7 @@ const loginSchema = z.object({
   password: z.string().min(8).max(72),
 })
 
-function createToken(userId: string) {
-  const secret = process.env.JWT_SECRET
-
-  if (!secret) {
-    throw new Error('JWT_SECRET belum dikonfigurasi')
-  }
-
+function createToken(userId: string, secret: string) {
   return jwt.sign({ userId }, secret, { expiresIn: '1d' })
 }
 
@@ -60,10 +53,16 @@ router.post('/register', async (req, res) => {
       select: { id: true, name: true, email: true },
     })
 
+    const secret = req.app.locals.JWT_SECRET ?? process.env.JWT_SECRET
+
+    if (!secret || typeof secret !== 'string') {
+      throw new Error('JWT_SECRET belum dikonfigurasi')
+    }
+
     res.status(201).json({
       message: 'Registrasi berhasil.',
       user,
-      token: createToken(user.id),
+      token: createToken(user.id, secret),
     })
   } catch (error) {
     console.error('Register error:', error)
@@ -94,6 +93,12 @@ router.post('/login', async (req, res) => {
       return
     }
 
+    const secret = req.app.locals.JWT_SECRET ?? process.env.JWT_SECRET
+
+    if (!secret || typeof secret !== 'string') {
+      throw new Error('JWT_SECRET belum dikonfigurasi')
+    }
+
     res.status(200).json({
       message: 'Login berhasil.',
       user: {
@@ -101,14 +106,13 @@ router.post('/login', async (req, res) => {
         name: user.name,
         email: user.email,
       },
-      token: createToken(user.id),
+      token: createToken(user.id, secret),
     })
   } catch (error) {
     console.error('Login error:', error)
     res.status(500).json({ message: 'Login gagal.' })
   }
 })
-
 
 router.get('/me', authenticate, async (req, res) => {
   try {
@@ -141,6 +145,5 @@ router.get('/me', authenticate, async (req, res) => {
     })
   }
 })
-
 
 export default router
