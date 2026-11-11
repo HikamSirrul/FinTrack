@@ -17,6 +17,7 @@ import HomePage from './pages/Home'
 import PublicNavbar from './components/PublicNavbar'
 import DashboardLayout from './components/DashboardLayout'
 import SavingsContributionChart from './components/SavingsContributionChart'
+import BalancedGrid from './components/BalancedGrid'
 import api from './lib/api'
 
 type DashboardAccount = {
@@ -145,10 +146,6 @@ function getGridColumns(itemCount: number) {
   return Math.max(1, Math.ceil(Math.sqrt(itemCount)))
 }
 
-function getAccountGridColumns(itemCount: number) {
-  if (itemCount <= 4) return Math.max(1, itemCount)
-  return Math.min(4, Math.ceil(itemCount / 2))
-}
 
 function AutoGrid({
   itemCount,
@@ -726,14 +723,7 @@ function App() {
               </button>
             </div>
           ) : (
-            <div
-              className="dashboard-account-grid"
-              style={
-                {
-                  '--grid-columns': getAccountGridColumns(accounts.length),
-                } as CSSProperties
-              }
-            >
+            <BalancedGrid className="dashboard-account-grid">
               {accounts.map((account) => {
                 const accountTypeLabels: Record<
                   DashboardAccount['type'],
@@ -794,7 +784,7 @@ function App() {
                   </article>
                 )
               })}
-            </div>
+            </BalancedGrid>
           )}
         </section>
 
