@@ -73,7 +73,8 @@ router.get('/summary', async (req, res) => {
                     category: true,
                 },
             }),
-            // Lima transaksi terbaru
+            // Batasi transaksi yang dimuat agar endpoint tetap ringan di Netlify.
+            // Panel Dashboard tetap menyediakan scroll untuk melihat transaksi terbaru.
             prisma.transaction.findMany({
                 where: { userId },
                 include: {
@@ -84,11 +85,16 @@ router.get('/summary', async (req, res) => {
                     { date: 'desc' },
                     { createdAt: 'desc' },
                 ],
-                take: 5,
+                take: 50,
             }),
             // Sasaran tabungan
             prisma.savingsGoal.findMany({
                 where: { userId },
+                include: {
+                    contributions: {
+                        orderBy: { createdAt: 'asc' },
+                    },
+                },
                 orderBy: { createdAt: 'desc' },
             }),
         ]);
