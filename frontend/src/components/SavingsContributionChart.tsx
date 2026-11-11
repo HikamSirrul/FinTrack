@@ -120,10 +120,8 @@ export default function SavingsContributionChart({
             <circle
               cx={point.x}
               cy={point.y}
-              r={selectedPointId === point.id ? '2.7' : '1.8'}
+              r={selectedPointId === point.id ? '3.2' : '1.8'}
               fill={selectedPointId === point.id ? '#047857' : '#78998b'}
-              stroke="#ffffff"
-              strokeWidth="1"
               vectorEffect="non-scaling-stroke"
               pointerEvents="none"
             />
