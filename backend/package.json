@@ -10,7 +10,8 @@
     "start": "node dist/server.js",
     "dev:worker": "wrangler dev",
     "deploy:worker": "wrangler deploy",
-    "typegen:worker": "wrangler types"
+    "typegen:worker": "wrangler types",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
