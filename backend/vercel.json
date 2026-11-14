@@ -1,8 +1,8 @@
 
 {
   "functions": {
-    "app.ts": {
-      "includeFiles": "node_modules/.prisma/client/**"
+    "**": {
+      "includeFiles": "node_modules/.prisma/client/**/*"
     }
   }
 }
