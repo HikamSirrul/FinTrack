@@ -4,7 +4,7 @@
 
 ## Live Demo
 
-FinTrack is deployed on Netlify. The deployment address is managed through the project's Netlify dashboard.
+*Live Demo:* [fintrack-hikamsrl.vercel.app](https://fintrack-hikamsrl.vercel.app/)
 
 ## Features
 
